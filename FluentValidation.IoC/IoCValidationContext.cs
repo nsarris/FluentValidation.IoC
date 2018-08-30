@@ -9,10 +9,18 @@ namespace FluentValidation.IoC
         public IDependencyResolver DependencyResolver { get; }
         public IValidatorFactory ValidatorFactory { get; }
 
+        public IoCValidationContext(IDependencyResolver resolver)
+            :this(resolver, null)
+        {
+            
+        }
+
         public IoCValidationContext(IDependencyResolver resolver, IValidatorFactory validatorFactory)
         {
+            if (resolver is null) throw new ArgumentNullException(nameof(resolver));
+
             this.DependencyResolver = resolver;
-            this.ValidatorFactory = validatorFactory;
+            this.ValidatorFactory = validatorFactory ?? resolver.Resolve<IValidatorFactory>();
         }
 
         internal static ValidationContext<T> BuildContext<T>(T instance, IDependencyResolver resolver, IValidatorFactory validatorFactory)
@@ -55,7 +63,7 @@ namespace FluentValidation.IoC
 
         public IoCValidationInstanceContext<T> For<T>(T instance)
         {
-            return new IoCValidationInstanceContext<T>(DependencyResolver, ValidatorFactory, instance);
+            return new IoCValidationInstanceContext<T>(instance, DependencyResolver, ValidatorFactory);
         }
 
         public void Dispose()

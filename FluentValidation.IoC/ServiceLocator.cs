@@ -12,7 +12,7 @@ namespace FluentValidation.IoC
         public static IValidatorFactory ValidatorFactory { get; set; }
         public static ILiteralService LiteralService { get; set; }
 
-        public static IoCValidationContext GetIoCValidationContext()
+        public static IoCValidationContext CreateIoCValidationContext()
         {
             if (DependencyResolver is null 
                 || ValidatorFactory is null)

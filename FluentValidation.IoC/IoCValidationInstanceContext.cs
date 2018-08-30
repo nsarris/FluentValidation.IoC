@@ -9,7 +9,7 @@ namespace FluentValidation.IoC
         private readonly IValidatorFactory validatorFactory;
         private readonly T instance;
 
-        internal IoCValidationInstanceContext(IDependencyResolver resolver, IValidatorFactory validatorFactory,T instance)
+        internal IoCValidationInstanceContext(T instance, IDependencyResolver resolver, IValidatorFactory validatorFactory)
         {
             this.resolver = resolver;
             this.instance = instance;
