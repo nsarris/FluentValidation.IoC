@@ -5,7 +5,8 @@ namespace FluentValidation.IoC.Unity
 {
     public class UnityValidatorResolver : UnityValidatorResolverBase
     {
-        public UnityValidatorResolver(IUnityContainer container) : base(container)
+        public UnityValidatorResolver(IUnityContainer container) 
+            : base(container, false)
         {
             
         }

@@ -64,10 +64,15 @@ namespace FluentValidation.IoC.Tests
             };
 
             ValidationResult result;
+
+            //Normally the IoCValidationContext would be injected in the caller's constructor
             using (var validationContext = Setup.Container.Resolve<IoCValidationContext>())
             {
                 result = validationContext.Validate(validCustomer);
             }
+
+            //To make sure the container wasn't disposed (Unity cleares the registrations)
+            Assert.IsTrue(Setup.Container.Registrations.Any());
 
             Assert.IsTrue(result.Errors.Count == 4);
 

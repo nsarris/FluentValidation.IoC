@@ -10,10 +10,12 @@ namespace FluentValidation.IoC.Unity
     public abstract class UnityValidatorResolverBase : IDependencyResolver, IValidatorFactory
     {
         protected readonly IUnityContainer container;
+        private readonly bool disposeContainer;
 
-        protected UnityValidatorResolverBase(IUnityContainer container)
+        protected UnityValidatorResolverBase(IUnityContainer container, bool disposeContainer)
         {
             this.container = container;
+            this.disposeContainer = disposeContainer;
         }
 
         public void Dispose()
@@ -24,7 +26,8 @@ namespace FluentValidation.IoC.Unity
 
         protected virtual void Dispose(bool disposing)
         {
-            container.Dispose();
+            if (disposeContainer)
+                container.Dispose();
         }
 
         public IValidator<T> GetValidator<T>()

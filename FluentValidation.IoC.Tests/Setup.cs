@@ -18,7 +18,17 @@ namespace FluentValidation.IoC.Tests
         {
             var container = new UnityContainer();
 
+            //This will make sure each IoCValidationContext gets a child container
+            //so disposing it wont dispose the base container
             container.RegisterResolverAndFactory<UnityValidatorHierarchicalResolver>();
+
+            //This will make sure each IoCValidationContext gets a shared container which it doesn't dispose
+            //when the context is disposed
+            //container.RegisterResolverAndFactory<UnityValidatorResolver>();
+
+            //Using the following resolver will dispose the container after each resolution context is disposed
+            //This only usefull if the container used is also injected as a dependency (e.g. child by factory)
+            //container.RegisterResolverAndFactory<UnityValidatorDisposableResolver>();
 
             //Registration by conenvtion is broken in .net framework in Unit.Registration by convention
             //From version 2.1.6 up to 2.1.8 (current)
