@@ -23,8 +23,8 @@ namespace FluentValidation.IoC
 
         internal static void AssertLiteralService()
         {
-            if (ServiceLocator.LiteralService is null)
-                throw new InvalidOperationException("Literal resolution is only supported by providing a literal service in ServiceLocator.");
+            if (LiteralService is null && DependencyResolver is null)
+                throw new InvalidOperationException("Literal resolution is only supported by providing a LiteralSerice or a DependencyResolver in ServiceLocator.");
         }
     }
 }

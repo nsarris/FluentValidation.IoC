@@ -33,6 +33,17 @@ namespace FluentValidation.IoC
             return factory;
         }
 
+        private static ILiteralService GetLiteralService()
+        {
+            var literalService = ServiceLocator.LiteralService
+                ?? ServiceLocator.DependencyResolver?.Resolve<ILiteralService>();
+
+            if (literalService == null)
+                throw new InvalidOperationException("Could not get a Dependency Resolver from ServiceLocator to resolve LiteralService and no LiteralService registered in ServiceLocator");
+
+            return literalService;
+        }
+
         internal static IDependencyResolver GetResolver(this CustomContext context)
         {
             return GetResolver(context.ParentContext);
@@ -94,11 +105,7 @@ namespace FluentValidation.IoC
             return GetResolver(context).Resolve<TDependency>();
         }
 
-        private static ILiteralService GetLiteralService()
-        {
-            ServiceLocator.AssertLiteralService();
-            return ServiceLocator.LiteralService;
-        }
+
 
         #endregion
 
