@@ -1,4 +1,5 @@
 ﻿using FluentValidation.IoC.Tests.Model;
+using FluentValidation.IoC.Tests.Services;
 
 namespace FluentValidation.IoC.Tests.Validators
 {
@@ -15,7 +16,8 @@ namespace FluentValidation.IoC.Tests.Validators
                 {
                     return vatService.IsValid(vatNumber);
                 })
-                .ResolveMessage("VatValidationServiceFailure");
+                .WithErrorCode("VatValidationServiceFailure")
+                .ResolveMessage();
 
 
             RuleFor(x => x.MainAddress)

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentValidation.Results;
 
 namespace FluentValidation.IoC.Tests
 {
@@ -20,7 +21,7 @@ namespace FluentValidation.IoC.Tests
             {
                 Id = 1,
                 Name = "Someone",
-                VatNumber = "EL12321211",
+                VatNumber = "12321211",
                 MainAddress = new Address()
                 {
                     City = "Athens",
@@ -29,8 +30,8 @@ namespace FluentValidation.IoC.Tests
                     PrimaryPhone = new Phone("+3012321321", PhoneKind.Home),
                     OtherPhones = new List<Phone>()
                     {
-                        new Phone("+3023121254354", PhoneKind.Home),
-                        new Phone("34132113254353", PhoneKind.Home),
+                        new Phone("693232142332", PhoneKind.Mobile),
+                        new Phone("432432323223", PhoneKind.Mobile),
                         new Phone("34234322", PhoneKind.Home),
                     }
                 },
@@ -46,8 +47,8 @@ namespace FluentValidation.IoC.Tests
                         {
                             new Phone("+30231212332423432", PhoneKind.Home),
                         }
-                        },
-                        new Address()
+                    },
+                    new Address()
                     {
                         City = "Xanthi",
                         Street = "Another street",
@@ -62,10 +63,22 @@ namespace FluentValidation.IoC.Tests
                 }
             };
 
+            ValidationResult result;
             using (var validationContext = Setup.Container.Resolve<IoCValidationContext>())
             {
-                var result = validationContext.Validate(validCustomer);
+                result = validationContext.Validate(validCustomer);
             }
+
+            Assert.IsTrue(result.Errors.Count == 4);
+
+            Assert.IsTrue(result.Errors[0].ErrorCode == "VatValidationServiceFailure"
+                && result.Errors[0].ErrorMessage == ServiceLocator.LiteralService.GetValidationErrorMessage(result.Errors[0].ErrorCode));
+
+            Assert.IsTrue(result.Errors[1].ErrorMessage.EndsWith("is not a valid mobile phone number"));
+
+            Assert.IsTrue(result.Errors[2].ErrorMessage.StartsWith("'Telephone Number'"));
+
+            Assert.IsTrue(result.Errors[3].ErrorMessage == "'Post Code' should not be empty.");
         }
     }
 }

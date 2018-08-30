@@ -276,7 +276,9 @@ namespace FluentValidation.IoC
 
         public static IRuleBuilderOptions<T, TProperty> ResolveName<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder)
         {
-            var propertyName = GetRuleBuilder(ruleBuilder)?.Rule?.DisplayName.ResourceName;
+            var propertyName = 
+                GetRuleBuilder(ruleBuilder)?.Rule?.DisplayName.ResourceName
+                ?? GetRuleBuilder(ruleBuilder)?.Rule?.PropertyName;
 
             if (string.IsNullOrEmpty(propertyName))
                 return ruleBuilder;

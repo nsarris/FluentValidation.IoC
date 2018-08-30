@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace FluentValidation.IoC.Tests
+namespace FluentValidation.IoC.Tests.Services
 {
     //This is service mocks an external dependency
     public class MockVatService : IVatService

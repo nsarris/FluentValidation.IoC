@@ -1,4 +1,4 @@
-﻿namespace FluentValidation.IoC.Tests
+﻿namespace FluentValidation.IoC.Tests.Services
 {
     public interface IVatService
     {

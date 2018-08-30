@@ -92,10 +92,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\IPhoneBookService.cs" />
     <Compile Include="Services\MockLiteralService.cs" />
     <Compile Include="Model\Models.cs" />
     <Compile Include="Services\IVatService.cs" />
     <Compile Include="Services\MockVatService.cs" />
+    <Compile Include="Services\MockPhoneBookService.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests.cs" />

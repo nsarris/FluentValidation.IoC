@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentValidation.IoC.Tests.Model;
+using FluentValidation.IoC.Tests.Services;
 using FluentValidation.IoC.Tests.Validators;
 using FluentValidation.IoC.Unity;
 using NUnit.Framework;
@@ -28,6 +29,7 @@ namespace FluentValidation.IoC.Tests
             container.RegisterType<IValidator<Phone>, PhoneValidator>();
 
             container.RegisterType<IVatService, MockVatService>();
+            container.RegisterType<IPhoneBookService, MockPhoneBookService>();
 
             ServiceLocator.LiteralService = new MockLiteralService();
 
