@@ -41,7 +41,7 @@ namespace FluentValidation.IoC.Tests
             container.RegisterType<IVatService, MockVatService>();
             container.RegisterType<IPhoneBookService, MockPhoneBookService>();
 
-            ServiceLocator.LiteralService = new MockLiteralService();
+            ServiceLocator.SetLiteralService(new MockLiteralService());
 
             Container = container;
         }

@@ -9,6 +9,18 @@ namespace FluentValidation.IoC
         public IDependencyResolver DependencyResolver { get; }
         public IValidatorFactory ValidatorFactory { get; }
 
+        public IoCValidationContext(IServiceProvider serviceProvider)
+            : this(new DependencyResolver(serviceProvider), null)
+        {
+
+        }
+
+        public IoCValidationContext(IServiceProvider serviceProvider, IValidatorFactory validatorFactory)
+            :this(new DependencyResolver(serviceProvider), validatorFactory)
+        {
+            
+        }
+
         public IoCValidationContext(IDependencyResolver resolver)
             :this(resolver, null)
         {

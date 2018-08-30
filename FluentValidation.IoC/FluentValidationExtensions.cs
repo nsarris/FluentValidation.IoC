@@ -14,7 +14,7 @@ namespace FluentValidation.IoC
         internal static IDependencyResolver GetResolver(this ValidationContext context)
         {
             var resolver = (IDependencyResolver)context.RootContextData[Constants.DependencyResolverKeyLiteral]
-                    ?? ServiceLocator.DependencyResolver;
+                    ?? ServiceLocator.GetDependencyResolver();
 
             if (resolver == null)
                 throw new InvalidOperationException("Could not get a dependency resolver for validation. Either use an IoCValidationContext or register a global dependency resolver in ServiceLocator.");
@@ -25,7 +25,7 @@ namespace FluentValidation.IoC
         internal static IValidatorFactory GetFactory(this ValidationContext context)
         {
             var factory = (IValidatorFactory)context.RootContextData[Constants.ValidatorFactoryKeyLiteral]
-                ?? ServiceLocator.ValidatorFactory;
+                ?? ServiceLocator.GetValidatorFactory();
 
             if (factory == null)
                 throw new InvalidOperationException("Could not get a validator factory. Either use an IoCValidationContext or register a global validator factory in ServiceLocator.");
@@ -35,8 +35,8 @@ namespace FluentValidation.IoC
 
         private static ILiteralService GetLiteralService()
         {
-            var literalService = ServiceLocator.LiteralService
-                ?? ServiceLocator.DependencyResolver?.Resolve<ILiteralService>();
+            var literalService = ServiceLocator.GetLiteralService()
+                ?? ServiceLocator.GetDependencyResolver()?.Resolve<ILiteralService>();
 
             if (literalService == null)
                 throw new InvalidOperationException("Could not get a Dependency Resolver from ServiceLocator to resolve LiteralService and no LiteralService registered in ServiceLocator");
