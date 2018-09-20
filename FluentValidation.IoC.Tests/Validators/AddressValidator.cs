@@ -2,6 +2,7 @@
 
 namespace FluentValidation.IoC.Tests.Validators
 {
+    [DefaultValidator]
     public class AddressValidator : AbstractValidator<Address>
     {
         public AddressValidator()
@@ -24,6 +25,7 @@ namespace FluentValidation.IoC.Tests.Validators
         }
     }
 
+    
     public class MainAddressValidator : AbstractValidator<Address>
     {
         public MainAddressValidator(IValidatorFactory validatorFactory)

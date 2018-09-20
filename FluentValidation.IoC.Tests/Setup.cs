@@ -30,13 +30,17 @@ namespace FluentValidation.IoC.Tests
             //This only usefull if the container used is also injected as a dependency (e.g. child by factory)
             //container.RegisterResolverAndFactory<UnityValidatorDisposableResolver>();
 
-            //Registration by conenvtion is broken in .net framework in Unit.Registration by convention
-            //From version 2.1.6 up to 2.1.8 (current)
+            //Caution: Registration by conenvtion AllClasses is broken in .net framework in Unit.Registration by convention
+            //from version 2.1.6 up to 2.1.8 
+            container.RegisterAllValidatorsAsSingletons();
+
+            //Registration from specific assembly
             //container.RegisterAllValidatorsAsSingletons(new[] { this.GetType().Assembly });
 
-            container.RegisterType<IValidator<Customer>, CustomerValidator>();
-            container.RegisterType<IValidator<Address>, AddressValidator>();
-            container.RegisterType<IValidator<Phone>, PhoneValidator>();
+            //Manual registration
+            //container.RegisterType<IValidator<Customer>, CustomerValidator>();
+            //container.RegisterType<IValidator<Address>, AddressValidator>();
+            //container.RegisterType<IValidator<Phone>, PhoneValidator>();
 
             container.RegisterType<IVatService, MockVatService>();
             container.RegisterType<IPhoneBookService, MockPhoneBookService>();

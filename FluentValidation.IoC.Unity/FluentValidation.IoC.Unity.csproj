@@ -3,7 +3,7 @@
     <TargetFrameworks>netcoreapp2.0;net47;net46</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Unity" Version="5.8.10" />
+    <PackageReference Include="Unity" Version="5.8.11" />
   </ItemGroup>
 
   <ItemGroup>
