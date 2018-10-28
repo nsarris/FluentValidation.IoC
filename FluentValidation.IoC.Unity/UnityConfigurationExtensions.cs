@@ -43,6 +43,19 @@ namespace FluentValidation.IoC.Unity
             RegisterIoCValidationContext(container);
         }
 
+        public static void RegisterLiteralService<TLiteralService>(this IUnityContainer container, TLiteralService literalService)
+            where TLiteralService : ILiteralService
+        {
+            container.RegisterInstance(literalService);
+            container.RegisterType<ILiteralService, TLiteralService>();
+        }
+
+        public static void RegisterLiteralService<TLiteralService>(this IUnityContainer container, LifetimeManager lifetimeManager)
+            where TLiteralService : ILiteralService
+        {
+            container.RegisterType<ILiteralService, TLiteralService>(lifetimeManager);
+        }
+
         public static void RegisterAllValidatorsAsSingletons(this IUnityContainer container, bool mapInterfaces = true)
         {
             container.RegisterAllValidatorsAsSingletons(AllClasses.FromAssembliesInBasePath(), mapInterfaces);

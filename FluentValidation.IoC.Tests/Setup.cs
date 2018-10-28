@@ -5,6 +5,7 @@ using FluentValidation.IoC.Tests.Validators;
 using FluentValidation.IoC.Unity;
 using NUnit.Framework;
 using Unity;
+using Unity.Lifetime;
 
 namespace FluentValidation.IoC.Tests
 {
@@ -42,10 +43,12 @@ namespace FluentValidation.IoC.Tests
             //container.RegisterType<IValidator<Address>, AddressValidator>();
             //container.RegisterType<IValidator<Phone>, PhoneValidator>();
 
+            //Register Literal Service
+            container.RegisterLiteralService<MockLiteralService>(new SingletonLifetimeManager());
+
+            //Register business services
             container.RegisterType<IVatService, MockVatService>();
             container.RegisterType<IPhoneBookService, MockPhoneBookService>();
-
-            ServiceLocator.SetLiteralService(new MockLiteralService());
 
             Container = container;
         }

@@ -10,6 +10,7 @@ namespace FluentValidation.IoC
     {
         string GetPropertyName(Type entityType, string propertyName);
         string GetPropertyName<T>(string propertyName);
+        string GetValidationErrorMessage(string code, IReadOnlyDictionary<string,object> messageValues);
         string GetValidationErrorMessage(string code);
     }
 }

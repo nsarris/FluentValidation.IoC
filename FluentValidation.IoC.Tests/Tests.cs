@@ -65,10 +65,13 @@ namespace FluentValidation.IoC.Tests
 
             ValidationResult result;
 
+            ILiteralService literalService;
+            
             //Normally the IoCValidationContext would be injected in the caller's constructor
             using (var validationContext = Setup.Container.Resolve<IoCValidationContext>())
             {
                 result = validationContext.Validate(validCustomer);
+                literalService = validationContext.DependencyResolver.Resolve<ILiteralService>();
             }
 
             //To make sure the container wasn't disposed (Unity cleares the registrations)
@@ -77,13 +80,13 @@ namespace FluentValidation.IoC.Tests
             Assert.IsTrue(result.Errors.Count == 4);
 
             Assert.IsTrue(result.Errors[0].ErrorCode == "VatValidationServiceFailure"
-                && result.Errors[0].ErrorMessage == ServiceLocator.GetLiteralService().GetValidationErrorMessage(result.Errors[0].ErrorCode));
+                && result.Errors[0].ErrorMessage == literalService.GetValidationErrorMessage(result.Errors[0].ErrorCode, result.Errors[0].FormattedMessagePlaceholderValues));
 
             Assert.IsTrue(result.Errors[1].ErrorMessage.EndsWith("is not a valid mobile phone number"));
 
-            Assert.IsTrue(result.Errors[2].ErrorMessage.StartsWith("'Telephone Number'"));
+            Assert.IsTrue(result.Errors[2].ErrorMessage.Contains("'Telephone Number'"));
 
-            Assert.IsTrue(result.Errors[3].ErrorMessage == "'Post Code' should not be empty.");
+            Assert.IsTrue(result.Errors[3].ErrorMessage.Contains("'Post Code'"));
         }
     }
 }

@@ -22,12 +22,17 @@ namespace FluentValidation.IoC.Tests.Services
             return GetPropertyName(typeof(T), propertyName);
         }
 
-        public string GetValidationErrorMessage(string code)
+        public string GetValidationErrorMessage(string code, IReadOnlyDictionary<string, object> messageValues)
         {
             if (code == "VatValidationServiceFailure")
-                return "VAT Service failed to validate VAT for customer";
+                return $"VAT Service failed to validate VAT number '{messageValues["PropertyValue"]}' for customer";
 
             return code;
+        }
+
+        public string GetValidationErrorMessage(string code)
+        {
+            return GetValidationErrorMessage(code, null);
         }
     }
 }

@@ -10,7 +10,6 @@ namespace FluentValidation.IoC
     {
         private static IDependencyResolver dependencyResolver;
         private static IValidatorFactory validatorFactory;
-        private static ILiteralService literalService;
 
         public static IDependencyResolver GetDependencyResolver()
         {
@@ -37,16 +36,6 @@ namespace FluentValidation.IoC
             validatorFactory = value;
         }
 
-        public static ILiteralService GetLiteralService()
-        {
-            return literalService;
-        }
-
-        public static void SetLiteralService(ILiteralService value)
-        {
-            literalService = value;
-        }
-
         public static IoCValidationContext CreateIoCValidationContext()
         {
             if (GetDependencyResolver() is null 
@@ -54,12 +43,6 @@ namespace FluentValidation.IoC
                 throw new InvalidOperationException("Cannot build an IoC Validation context if the DependencyResolver or ValidatorFactory are not set in ServiceLocator.");
 
             return new IoCValidationContext(GetDependencyResolver(), GetValidatorFactory());
-        }
-
-        internal static void AssertLiteralService()
-        {
-            if (GetLiteralService() is null && GetDependencyResolver() is null)
-                throw new InvalidOperationException("Literal resolution is only supported by providing a LiteralSerice or a DependencyResolver in ServiceLocator.");
         }
     }
 }

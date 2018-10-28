@@ -33,15 +33,9 @@ namespace FluentValidation.IoC
             return factory;
         }
 
-        private static ILiteralService GetLiteralService()
+        internal static ILiteralService GetLiteralService(this ValidationContext context)
         {
-            var literalService = ServiceLocator.GetLiteralService()
-                ?? ServiceLocator.GetDependencyResolver()?.Resolve<ILiteralService>();
-
-            if (literalService == null)
-                throw new InvalidOperationException("Could not get a Dependency Resolver from ServiceLocator to resolve LiteralService and no LiteralService registered in ServiceLocator");
-
-            return literalService;
+            return context.GetResolver().Resolve<ILiteralService>();
         }
 
         internal static IDependencyResolver GetResolver(this CustomContext context)
@@ -272,13 +266,42 @@ namespace FluentValidation.IoC
         #endregion
 
         #region String literals
+        internal class IoCPropertyNameSource : Resources.IStringSource
+        {
+            private readonly Type entityType;
+            private readonly string propertyName;
+
+            public IoCPropertyNameSource(Type entityType, string propertyName)
+            {
+                this.entityType = entityType;
+                this.propertyName = propertyName;
+            }
+            public string GetString(IValidationContext context)
+            {
+                if (context == null)
+                    return null;
+                else
+                {
+                    if (context is ValidationContext validationContext)
+                    {
+                        return validationContext.GetLiteralService().GetPropertyName(entityType, propertyName);
+                    }
+                    else
+                        return null;
+                }
+            }
+
+            public string ResourceName => null;
+
+            public Type ResourceType => null;
+        }
 
         private static (Type entityType, string propertyName) ExtractSelector<T>(Expression<Func<T, object>> selector)
         {
             if (selector.Body is MemberExpression memberExpression)
                 return (memberExpression.Expression.Type, memberExpression.Member.Name);
 
-            throw new ArgumentException("Expresssion provided is a valid member expression.", nameof(selector));
+            throw new ArgumentException("Expresssion provided is not a valid member expression.", nameof(selector));
         }
 
         public static IRuleBuilderOptions<T, TProperty> ResolveName<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder)
@@ -302,23 +325,19 @@ namespace FluentValidation.IoC
 
         public static IRuleBuilderOptions<T, TProperty> ResolveName<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder, Type entityType, string propertyName)
         {
-            ServiceLocator.AssertLiteralService();
-
             return ruleBuilder
-                .WithName(x =>
-                {
-                    return GetLiteralService().GetPropertyName(entityType, propertyName);
-                });
+                .Configure(x => { x.DisplayName = new IoCPropertyNameSource(typeof(T), propertyName); });
         }
 
         public static IRuleBuilderOptions<T, TProperty> ResolveMessage<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder, string code)
         {
-            ServiceLocator.AssertLiteralService();
-
             return ruleBuilder
-                .WithMessage(x =>
+                .Configure(x =>
                 {
-                    return GetLiteralService().GetValidationErrorMessage(code);
+                    x.MessageBuilder = (messageBuilderContext) =>
+                    {
+                        return messageBuilderContext.ParentContext.GetLiteralService().GetValidationErrorMessage(code, messageBuilderContext.MessageFormatter.PlaceholderValues);
+                    };
                 });
         }
 
