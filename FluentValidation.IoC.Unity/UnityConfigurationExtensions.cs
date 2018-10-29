@@ -58,7 +58,7 @@ namespace FluentValidation.IoC.Unity
 
         public static void RegisterAllValidatorsAsSingletons(this IUnityContainer container, bool mapInterfaces = true)
         {
-            container.RegisterAllValidatorsAsSingletons(AllClasses.FromAssembliesInBasePath(), mapInterfaces);
+            container.RegisterAllValidatorsAsSingletons(AllClassesEx.FromAssembliesInBasePath(), mapInterfaces);
         }
 
         public static void RegisterAllValidatorsAsSingletons(this IUnityContainer container, IEnumerable<Assembly> assemblies, bool mapInterfaces = true)
@@ -75,9 +75,9 @@ namespace FluentValidation.IoC.Unity
         {
             var validatorTypes = types
                     .Where(x =>
-                        x.BaseType != null
-                        && x.BaseType.IsGenericType
-                        && x.BaseType.GetGenericTypeDefinition() == typeof(AbstractValidator<>))
+                        x.Assembly != typeof(AbstractValidator<>).Assembly
+                        && !x.IsGenericType
+                        && IsSubclassOfGeneric(x, typeof(AbstractValidator<>)))
                      .GroupBy(x => x.BaseType.GetGenericArguments().First(), x => new
                      {
                          Type = x, IsDefault = x.CustomAttributes.Any(a => a.AttributeType == typeof(DefaultValidatorAttribute))
@@ -111,11 +111,7 @@ namespace FluentValidation.IoC.Unity
             var typesToRegister = validatorTypes.Select(x => x.Validators.OrderByDescending(v => v.IsDefault).Select(v => v.Type).First());
 
             container.RegisterTypes(
-                typesToRegister
-                    .Where(x => 
-                        x.BaseType.IsGenericType
-                        && x.BaseType.GetGenericTypeDefinition() == typeof(AbstractValidator<>))
-                     ,
+                typesToRegister,
                 t => new[] { t }.Concat(
                     mapInterfaces ?
                         WithMappings.FromAllInterfaces(t)
@@ -123,6 +119,27 @@ namespace FluentValidation.IoC.Unity
                         Enumerable.Empty<Type>()),
                 WithName.Default,
                 _ => new SingletonLifetimeManager());
+        }
+
+
+        private static bool IsSubclassOfGeneric(Type type, Type openGenericType)
+        {
+            return IsOrSubclassOfGeneric(type.BaseType, openGenericType);
+        }
+
+        private static bool IsOrSubclassOfGeneric(Type type, Type genericType)
+        {
+            var openGenericType = genericType.IsGenericType ? genericType.GetGenericTypeDefinition() : genericType;
+
+            while (type != typeof(object))
+            {
+                if (type.IsGenericType && type.GetGenericTypeDefinition() == openGenericType)
+                    return true;
+
+                type = type.BaseType;
+            }
+
+            return false;
         }
     }
 }

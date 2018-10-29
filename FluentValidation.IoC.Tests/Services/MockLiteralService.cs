@@ -25,7 +25,9 @@ namespace FluentValidation.IoC.Tests.Services
         public string GetValidationErrorMessage(string code, IReadOnlyDictionary<string, object> messageValues)
         {
             if (code == "VatValidationServiceFailure")
-                return $"VAT Service failed to validate VAT number '{messageValues["PropertyValue"]}' for customer";
+            {
+                return $"VAT Service failed to validate VAT number '{messageValues?["PropertyValue"] ?? "{PropertyValue}"}' for customer";
+            }
 
             return code;
         }

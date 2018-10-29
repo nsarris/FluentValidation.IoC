@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace FluentValidation.IoC
 {
-    public static class FluentValidationExtensions
+    public static partial class FluentValidationExtensions
     {
         #region Validation and Dependency resolition
 
@@ -223,9 +223,9 @@ namespace FluentValidation.IoC
 
         #endregion
 
-        #region Custom - Inject resolver and implement custom logic
+        #region Must and Custom - Inject resolver and implement custom logic
 
-        public static IRuleBuilderOptions<T, TChild> Custom<T, TChild>(
+        public static IRuleBuilderOptions<T, TChild> Must<T, TChild>(
             this IRuleBuilder<T, TChild> ruleBuilder, 
             Func<T, TChild, IDependencyResolver, bool> validatorFunction)
         {
@@ -234,6 +234,18 @@ namespace FluentValidation.IoC
                 {
                     var resolver = GetResolver(context);
                     return validatorFunction(parent, child, resolver);
+                });
+        }
+
+        public static IRuleBuilderOptions<T, TChild> Must<T, TChild>(
+            this IRuleBuilder<T, TChild> ruleBuilder,
+            Func<T, TChild, IDependencyResolver, PropertyValidatorContext, bool> validatorFunction)
+        {
+            return ruleBuilder
+                .Must((parent, child, context) =>
+                {
+                    var resolver = GetResolver(context);
+                    return validatorFunction(parent, child, resolver, context);
                 });
         }
 
@@ -266,35 +278,6 @@ namespace FluentValidation.IoC
         #endregion
 
         #region String literals
-        internal class IoCPropertyNameSource : Resources.IStringSource
-        {
-            private readonly Type entityType;
-            private readonly string propertyName;
-
-            public IoCPropertyNameSource(Type entityType, string propertyName)
-            {
-                this.entityType = entityType;
-                this.propertyName = propertyName;
-            }
-            public string GetString(IValidationContext context)
-            {
-                if (context == null)
-                    return null;
-                else
-                {
-                    if (context is ValidationContext validationContext)
-                    {
-                        return validationContext.GetLiteralService().GetPropertyName(entityType, propertyName);
-                    }
-                    else
-                        return null;
-                }
-            }
-
-            public string ResourceName => null;
-
-            public Type ResourceType => null;
-        }
 
         private static (Type entityType, string propertyName) ExtractSelector<T>(Expression<Func<T, object>> selector)
         {
@@ -326,7 +309,7 @@ namespace FluentValidation.IoC
         public static IRuleBuilderOptions<T, TProperty> ResolveName<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder, Type entityType, string propertyName)
         {
             return ruleBuilder
-                .Configure(x => { x.DisplayName = new IoCPropertyNameSource(typeof(T), propertyName); });
+                .Configure(x => { x.DisplayName = new IoCPropertyNameStringSource(typeof(T), propertyName); });
         }
 
         public static IRuleBuilderOptions<T, TProperty> ResolveMessage<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder, string code)
@@ -334,10 +317,8 @@ namespace FluentValidation.IoC
             return ruleBuilder
                 .Configure(x =>
                 {
-                    x.MessageBuilder = (messageBuilderContext) =>
-                    {
-                        return messageBuilderContext.ParentContext.GetLiteralService().GetValidationErrorMessage(code, messageBuilderContext.MessageFormatter.PlaceholderValues);
-                    };
+                    x.CurrentValidator.Options.ErrorCodeSource = new Resources.StaticStringSource(code);
+                    x.CurrentValidator.Options.ErrorMessageSource = new IoCErrorMessageStringSource(code);
                 });
         }
 

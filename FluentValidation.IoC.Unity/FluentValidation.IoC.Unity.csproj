@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;net47;net46</TargetFrameworks>
+    <TargetFrameworks>net46;net47;netcoreapp2.0;netstandard2.0;</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Unity" Version="5.8.11" />
@@ -9,4 +9,14 @@
   <ItemGroup>
     <ProjectReference Include="..\FluentValidation.IoC\FluentValidation.IoC.csproj" />
   </ItemGroup>
+
+  <PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net\d'))">
+    <DefineConstants>NETFRAMEWORK</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard\d'))">
+    <DefineConstants>NETSTANDARD</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netcoreapp\d'))">
+    <DefineConstants>NETCORE</DefineConstants>
+  </PropertyGroup>
 </Project>
