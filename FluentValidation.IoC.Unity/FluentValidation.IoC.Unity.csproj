@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net46;net47;netcoreapp2.0;netstandard2.0;</TargetFrameworks>
+    <TargetFrameworks>net462;netcoreapp2.0;netstandard2.0;</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Unity" Version="5.8.11" />
+    <PackageReference Include="Unity" Version="5.9.3" />
+    <PackageReference Include="unity.registrationbyconvention" Version="5.9.1" />
   </ItemGroup>
 
   <ItemGroup>

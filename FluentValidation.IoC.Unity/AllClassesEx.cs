@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Security;
 using System.Text;
-using Unity.RegistrationByConvention;
 
 namespace FluentValidation.IoC.Unity
 {
@@ -142,7 +141,7 @@ namespace FluentValidation.IoC.Unity
 
         private static string GetUnityProductName()
         {
-            var productAttribute = typeof(AllClasses).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyProductAttribute>();
+            var productAttribute = typeof(global::Unity.IUnityContainer).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyProductAttribute>();
             return productAttribute?.Product;
         }
     }

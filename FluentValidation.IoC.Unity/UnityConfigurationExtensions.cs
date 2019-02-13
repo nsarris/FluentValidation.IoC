@@ -50,7 +50,7 @@ namespace FluentValidation.IoC.Unity
             container.RegisterType<ILiteralService, TLiteralService>();
         }
 
-        public static void RegisterLiteralService<TLiteralService>(this IUnityContainer container, LifetimeManager lifetimeManager)
+        public static void RegisterLiteralService<TLiteralService>(this IUnityContainer container, ITypeLifetimeManager lifetimeManager)
             where TLiteralService : ILiteralService
         {
             container.RegisterType<ILiteralService, TLiteralService>(lifetimeManager);
