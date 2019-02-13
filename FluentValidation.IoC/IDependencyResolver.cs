@@ -2,9 +2,8 @@
 
 namespace FluentValidation.IoC
 {
-    public interface IDependencyResolver : IDisposable
+    public interface IDependencyResolver : IServiceProvider, IDisposable
     {
-        T Resolve<T>();
-        object Resolve(Type type);
+        T GetService<T>();
     }
 }

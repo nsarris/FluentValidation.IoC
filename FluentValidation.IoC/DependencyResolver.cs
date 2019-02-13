@@ -19,14 +19,14 @@ namespace FluentValidation.IoC
                 disposable.Dispose();
         }
 
-        public T Resolve<T>()
+        public T GetService<T>()
         {
             return (T)serviceProvider.GetService(typeof(T));
         }
 
-        public object Resolve(Type type)
+        public object GetService(Type serviceType)
         {
-            return serviceProvider.GetService(type);
+            return serviceProvider.GetService(serviceType);
         }
     }
 }

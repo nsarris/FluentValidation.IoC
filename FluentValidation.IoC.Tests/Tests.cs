@@ -62,7 +62,7 @@ namespace FluentValidation.IoC.Tests
                     }
                 }
             };
-
+            
             ValidationResult result;
 
             ILiteralService literalService;
@@ -71,7 +71,7 @@ namespace FluentValidation.IoC.Tests
             using (var validationContext = Setup.Container.Resolve<IoCValidationContext>())
             {
                 result = validationContext.Validate(validCustomer);
-                literalService = validationContext.DependencyResolver.Resolve<ILiteralService>();
+                literalService = validationContext.DependencyResolver.GetService<ILiteralService>();
             }
 
             //To make sure the container wasn't disposed (Unity cleares the registrations)

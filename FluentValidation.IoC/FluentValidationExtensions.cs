@@ -35,7 +35,7 @@ namespace FluentValidation.IoC
 
         internal static ILiteralService GetLiteralService(this ValidationContext context)
         {
-            return context.GetResolver().Resolve<ILiteralService>();
+            return context.GetResolver().GetService<ILiteralService>();
         }
 
         internal static IDependencyResolver GetResolver(this CustomContext context)
@@ -91,12 +91,12 @@ namespace FluentValidation.IoC
 
         internal static TDependency ResolveDependency<TDependency>(this CustomContext context)
         {
-            return GetResolver(context).Resolve<TDependency>();
+            return GetResolver(context).GetService<TDependency>();
         }
 
         internal static TDependency ResolveDependency<TDependency>(this PropertyValidatorContext context)
         {
-            return GetResolver(context).Resolve<TDependency>();
+            return GetResolver(context).GetService<TDependency>();
         }
 
 

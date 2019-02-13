@@ -20,7 +20,7 @@ namespace FluentValidation.IoC.Tests.Validators
                 .ResolveName()
                 .Custom((parent, x, resolver, context) =>
                 {
-                    var phoneBookService = resolver.Resolve<IPhoneBookService>();
+                    var phoneBookService = resolver.GetService<IPhoneBookService>();
                     if (!phoneBookService.IsExistingNumber(x))
                         context.AddFailure($"{x} is not an existing phone number");
 

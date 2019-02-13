@@ -28,19 +28,19 @@ namespace FluentValidation.IoC
 
         #region Specify validator to resolve
 
-        public IRuleBuilderOptions<T, TChild> SetValidator<TValidator>()
+        public IRuleBuilderOptions<T, TChild> SetValidator<TValidator>(params string[] ruleSets)
             where TValidator : IValidator<TChild>
         {
-            return
-                (IRuleBuilderOptions<T, TChild>)ruleBuilder
-                .Custom((x, context) =>
-                {
-                    if (x != null)
-                    {
-                        var validator = context.ResolveValidator<TChild, TValidator>();
-                        context.Append(context.ExecuteChild(x, validator));
-                    }
-                });
+            var adaptor = new ChildValidatorAdaptor(context =>
+            {
+                var actualContext = (PropertyValidatorContext)context;
+                return actualContext.ResolveValidator<TChild, TValidator>();
+            }, typeof(IValidator<TChild>))
+            {
+                RuleSets = ruleSets
+            };
+
+            return ruleBuilder.SetValidator(adaptor);
         }
 
         public IRuleBuilderOptions<T, TChild> SetValidator<TValidator>(Func<T, TChild, TValidator, bool> validatorFunction)

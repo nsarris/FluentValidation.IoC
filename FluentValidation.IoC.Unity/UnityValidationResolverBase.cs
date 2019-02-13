@@ -33,7 +33,7 @@ namespace FluentValidation.IoC.Unity
 
         public IValidator<T> GetValidator<T>()
         {
-            return Resolve<IValidator<T>>();
+            return GetService<IValidator<T>>();
         }
 
         public IValidator GetValidator(Type type)
@@ -41,13 +41,13 @@ namespace FluentValidation.IoC.Unity
             if (!typeof(IValidator).IsAssignableFrom(type))
                 throw new InvalidOperationException($"Type {type.Name} does not implement IValidator");
 
-            return (IValidator)Resolve(type);
+            return (IValidator)GetService(type);
         }
 
         public TValidator GetValidator<T, TValidator>()
             where TValidator : IValidator<T>
         {
-            return Resolve<TValidator>();
+            return GetService<TValidator>();
         }
 
         public IValidator<T> GetValidator<T>(Type validatorType)
@@ -55,17 +55,17 @@ namespace FluentValidation.IoC.Unity
             if (!typeof(IValidator<T>).IsAssignableFrom(validatorType))
                 throw new InvalidOperationException($"Type {validatorType.Name} does not implement IValidator<{typeof(T).Name}>");
 
-            return (IValidator<T>)Resolve(validatorType);
+            return (IValidator<T>)GetService(validatorType);
         }
 
-        public T Resolve<T>()
+        public T GetService<T>()
         {
             return container.Resolve<T>();
         }
 
-        public object Resolve(Type type)
+        public object GetService(Type serviceType)
         {
-            return container.Resolve(type);
+            return container.Resolve(serviceType);
         }
     }
 }
