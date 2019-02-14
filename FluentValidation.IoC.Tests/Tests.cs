@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 
+
 namespace FluentValidation.IoC.Tests
 {
     [TestFixture]
@@ -66,12 +67,13 @@ namespace FluentValidation.IoC.Tests
             ValidationResult result;
 
             ILiteralService literalService;
-            
+
             //Normally the IoCValidationContext would be injected in the caller's constructor
-            using (var validationContext = Setup.Container.Resolve<IoCValidationContext>())
+            using (var scope = Setup.Container.CreateChildContainer())
             {
+                var validationContext = Setup.Container.Resolve<IoCValidationContext>();
                 result = validationContext.Validate(validCustomer);
-                literalService = validationContext.DependencyResolver.GetService<ILiteralService>();
+                literalService = (ILiteralService)validationContext.ServiceProvider.GetService(typeof(ILiteralService));
             }
 
             //To make sure the container wasn't disposed (Unity cleares the registrations)

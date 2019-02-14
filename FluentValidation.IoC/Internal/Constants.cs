@@ -8,6 +8,6 @@ namespace FluentValidation.IoC
 {
     internal static class Constants
     {
-        public static readonly string DependencyResolverKeyLiteral = "_FV_ServiceProvider";
+        public static readonly string ServiceProviderKeyLiteral = "_FV_ServiceProvider";
     }
 }

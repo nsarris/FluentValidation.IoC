@@ -8,27 +8,22 @@ namespace FluentValidation.IoC
 {
     public static class ServiceLocator
     {
-        private static IDependencyResolver dependencyResolver;
+        private static IServiceProvider serviceProvider;
         private static IValidatorFactory validatorFactory;
 
-        public static IDependencyResolver GetDependencyResolver()
+        public static IServiceProvider GetServiceProvider()
         {
-            return dependencyResolver;
+            return serviceProvider;
         }
 
-        public static void SetDependencyResolver(IDependencyResolver value)
+        public static void SetServiceProvider(IServiceProvider value)
         {
-            dependencyResolver = value;
-        }
-
-        public static void SetDependencyResolver(IServiceProvider value)
-        {
-            dependencyResolver = new DefaultDependencyResolver(value);
+            serviceProvider = value;
         }
 
         public static IValidatorFactory GetValidatorFactory()
         {
-            return validatorFactory;
+            return validatorFactory ?? serviceProvider.GetValidatorFactory();
         }
 
         public static void SetValidatorFactory(IValidatorFactory value)
@@ -38,11 +33,11 @@ namespace FluentValidation.IoC
 
         public static IoCValidationContext CreateIoCValidationContext()
         {
-            if (GetDependencyResolver() is null 
+            if (GetServiceProvider() is null 
                 || GetValidatorFactory() is null)
                 throw new InvalidOperationException("Cannot build an IoC Validation context if the DependencyResolver or ValidatorFactory are not set in ServiceLocator.");
 
-            return new IoCValidationContext(GetDependencyResolver());
+            return new IoCValidationContext(GetServiceProvider());
         }
     }
 }

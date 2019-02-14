@@ -12,7 +12,7 @@ namespace FluentValidation.IoC.Tests
     [SetUpFixture]
     public class Setup
     {
-        public static UnityContainer Container { get; private set; }
+        public static IUnityContainer Container { get; private set; }
 
         [OneTimeSetUp]
         public void SetUp()
@@ -22,7 +22,7 @@ namespace FluentValidation.IoC.Tests
             //This will make sure each IoCValidationContext gets a child container
             //so disposing it wont dispose the base container
             container
-                .RegisterValidationResolver<UnityValidatorHierarchicalResolver>()
+                .RegisterServiceProvider()
                 .RegisterDefaultValidatorFactory()
 
             //This will make sure each IoCValidationContext gets a shared container which it doesn't dispose

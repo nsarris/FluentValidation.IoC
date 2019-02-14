@@ -9,41 +9,20 @@ namespace FluentValidation.IoC
 {
     public static class ServiceCollectionExtensions
     {
-        private static void RegisterIoCValidationContext(this IServiceCollection services)
-        {
-            services.AddTransient(sp => new IoCValidationContext(sp.GetRequiredService<IDependencyResolver>()));
-        }
-
-        public static IServiceCollection AddValidationIocExtensions(this IServiceCollection services, IEnumerable<Assembly> assemblies = null)
-            => AddValidationIocExtensions<DefaultDependencyResolver>(services, assemblies);
-
-        public static IServiceCollection AddValidationIocExtensions<TResolver>(this IServiceCollection services, IEnumerable<Assembly> assemblies = null)
-            where TResolver : class, IDependencyResolver
+        public static IServiceCollection AddFluentValidationIocExtensions(this IServiceCollection services, IEnumerable<Assembly> assemblies = null)
         {
             return services
-                .AddValidationResolver<TResolver>()
+                .AddIoCValidationContext()
                 .AddDefaultValidatorFactory()
                 .AddValidators(assemblies);
         }
 
-        public static IServiceCollection AddDefaultResolver(this IServiceCollection services)
+        public static IServiceCollection AddIoCValidationContext(this IServiceCollection services)
         {
-            return services.AddValidationResolver<DefaultDependencyResolver>();
+            return services.AddTransient(sp => new IoCValidationContext(sp.GetRequiredService<IServiceProvider>()));
         }
 
-        public static IServiceCollection AddValidationResolver<TResolver>(this IServiceCollection services)
-            where TResolver : class, IDependencyResolver
-        {
-            if (typeof(TResolver) == typeof(DefaultDependencyResolver))
-                services.AddTransient<IDependencyResolver>(sp => new DefaultDependencyResolver(sp));
-            else
-                services.AddTransient<IDependencyResolver, TResolver>();
-
-            RegisterIoCValidationContext(services);
-
-            return services;
-        }
-
+        
         public static IServiceCollection AddDefaultValidatorFactory(this IServiceCollection services)
         {
             services.AddTransient<IValidatorFactory>(sp => new DefaultValidatorFactory(sp));
