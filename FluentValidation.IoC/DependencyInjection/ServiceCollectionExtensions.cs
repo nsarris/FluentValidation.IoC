@@ -77,12 +77,21 @@ namespace FluentValidation.IoC
         public static IServiceCollection AddValidators(this IServiceCollection services, IEnumerable<Type> validatorTypes, ServiceLifetime lifetime = ServiceLifetime.Singleton, bool mapInterfaces = true)
         {
             services.Scan(x =>
-                (validatorTypes == null ? x.FromApplicationDependencies() : x.AddTypes(validatorTypes))
+                x.FromApplicationDependencies()
                 .AddClasses(c => c
                     .Where(cc => cc.Assembly != typeof(IValidator).Assembly)
                     .AssignableTo(typeof(IValidator<>)))
-                .AsImplementedInterfaces()
                 .AsSelf()
+                .WithLifetime(lifetime));
+
+            validatorTypes = validatorTypes ?? ReflectionHelper.AutoDiscoverValidatorTypes(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.Scan(x =>
+                x.AddTypes(validatorTypes)
+                .AddClasses(c => c
+                    .Where(cc => cc.Assembly != typeof(IValidator).Assembly)
+                    .AssignableTo(typeof(IValidator<>)))
+                .As(t => t.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IValidator<>)))
                 .WithLifetime(lifetime));
 
             return services;

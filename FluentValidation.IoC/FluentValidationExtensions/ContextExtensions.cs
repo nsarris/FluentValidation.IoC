@@ -3,6 +3,7 @@ using FluentValidation.Validators;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentValidation.IoC
 {
@@ -39,7 +40,7 @@ namespace FluentValidation.IoC
 
         public static ILiteralService GetLiteralService(this ValidationContext context)
         {
-            return context.GetServiceProvider().GetService<ILiteralService>();
+            return context.GetServiceProvider().GetRequiredService<ILiteralService>();
         }
 
         public static ValidationResult ValidateUsing<TValidator>(this ValidationContext context)
@@ -111,12 +112,12 @@ namespace FluentValidation.IoC
 
         public static TDependency ResolveDependency<TDependency>(this CustomContext context)
         {
-            return GetServiceProvider(context).GetService<TDependency>();
+            return GetServiceProvider(context).GetRequiredService<TDependency>();
         }
 
         public static TDependency ResolveDependency<TDependency>(this PropertyValidatorContext context)
         {
-            return GetServiceProvider(context).GetService<TDependency>();
+            return GetServiceProvider(context).GetRequiredService<TDependency>();
         }
 
         public static CustomContext Append(this CustomContext validationContext, ValidationResult result)

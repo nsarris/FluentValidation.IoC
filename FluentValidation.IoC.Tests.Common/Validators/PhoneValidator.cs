@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentValidation.IoC.Tests.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentValidation.IoC.Tests.Validators
 {
@@ -20,7 +21,7 @@ namespace FluentValidation.IoC.Tests.Validators
                 .ResolveName()
                 .Custom((parent, x, serviceProvider, context) =>
                 {
-                    var phoneBookService = serviceProvider.GetService<IPhoneBookService>();
+                    var phoneBookService = serviceProvider.GetRequiredService<IPhoneBookService>();
                     if (!phoneBookService.IsExistingNumber(x))
                         context.AddFailure($"{x} is not an existing phone number");
 
