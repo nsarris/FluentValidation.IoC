@@ -8,64 +8,23 @@ using Unity.Injection;
 
 namespace FluentValidation.IoC.Unity
 {
-    public abstract class UnityValidatorResolverBase : IDependencyResolver, IValidatorFactory
+    public abstract class UnityValidatorResolverBase : DefaultDependencyResolver
     {
-        protected readonly IUnityContainer container;
         private readonly bool disposeContainer;
 
+        public IUnityContainer Container { get; }
+
         protected UnityValidatorResolverBase(IUnityContainer container, bool disposeContainer)
+            : base(new UnityServiceProvider(container))
         {
-            this.container = container;
+            Container = container;
             this.disposeContainer = disposeContainer;
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (disposeContainer)
-                container.Dispose();
-        }
-
-        public IValidator<T> GetValidator<T>()
-        {
-            return GetService<IValidator<T>>();
-        }
-
-        public IValidator GetValidator(Type type)
-        {
-            if (!typeof(IValidator).IsAssignableFrom(type))
-                throw new InvalidOperationException($"Type {type.Name} does not implement IValidator");
-
-            return (IValidator)GetService(type);
-        }
-
-        public TValidator GetValidator<T, TValidator>()
-            where TValidator : IValidator<T>
-        {
-            return GetService<TValidator>();
-        }
-
-        public IValidator<T> GetValidator<T>(Type validatorType)
-        {
-            if (!typeof(IValidator<T>).IsAssignableFrom(validatorType))
-                throw new InvalidOperationException($"Type {validatorType.Name} does not implement IValidator<{typeof(T).Name}>");
-
-            return (IValidator<T>)GetService(validatorType);
-        }
-
-        public T GetService<T>()
-        {
-            return container.Resolve<T>();
-        }
-
-        public object GetService(Type serviceType)
-        {
-            return container.Resolve(serviceType);
+                base.Dispose(disposing);
         }
     }
 }

@@ -21,7 +21,9 @@ namespace FluentValidation.IoC.Tests
 
             //This will make sure each IoCValidationContext gets a child container
             //so disposing it wont dispose the base container
-            container.RegisterResolverAndFactory<UnityValidatorHierarchicalResolver>();
+            container
+                .RegisterResolver<UnityValidatorHierarchicalResolver>()
+                .RegisterDefaultFactory()
 
             //This will make sure each IoCValidationContext gets a shared container which it doesn't dispose
             //when the context is disposed
@@ -33,7 +35,7 @@ namespace FluentValidation.IoC.Tests
 
             //Caution: Registration by conenvtion AllClasses is broken in .net framework in Unit.Registration by convention
             //from version 2.1.6 up to 2.1.8 
-            container.RegisterAllValidatorsAsSingletons();
+                .RegisterAllValidatorsAsSingletons()
 
             //Registration from specific assembly
             //container.RegisterAllValidatorsAsSingletons(new[] { this.GetType().Assembly });
@@ -44,11 +46,11 @@ namespace FluentValidation.IoC.Tests
             //container.RegisterType<IValidator<Phone>, PhoneValidator>();
 
             //Register Literal Service
-            container.RegisterLiteralService<MockLiteralService>(new SingletonLifetimeManager());
+                .RegisterLiteralService<MockLiteralService>(new SingletonLifetimeManager())
 
             //Register business services
-            container.RegisterType<IVatService, MockVatService>();
-            container.RegisterType<IPhoneBookService, MockPhoneBookService>();
+                .RegisterType<IVatService, MockVatService>()
+                .RegisterType<IPhoneBookService, MockPhoneBookService>();
 
             Container = container;
         }

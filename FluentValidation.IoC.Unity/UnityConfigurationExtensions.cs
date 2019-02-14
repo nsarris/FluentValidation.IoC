@@ -18,50 +18,57 @@ namespace FluentValidation.IoC.Unity
             container.RegisterType<IoCValidationContext>(new InjectionConstructor(new[] { typeof(IDependencyResolver), typeof(IValidatorFactory) }));
         }
 
-        public static void RegisterResolverAndFactory<TResolver>(this IUnityContainer container)
-            where TResolver : IDependencyResolver, IValidatorFactory
-        {
-            container.RegisterType<IDependencyResolver, TResolver>();
-            container.RegisterType<IValidatorFactory, TResolver>();
-
-            RegisterIoCValidationContext(container);
-        }
-
-        public static void RegisterResolver<TResolver>(this IUnityContainer container)
+        public static IUnityContainer RegisterResolver<TResolver>(this IUnityContainer container)
             where TResolver : IDependencyResolver
         {
             container.RegisterType<IDependencyResolver, TResolver>();
 
             RegisterIoCValidationContext(container);
+
+            return container;
         }
 
-        public static void RegisterFactory<TValidatorFactory>(this IUnityContainer container)
+        public static IUnityContainer RegisterDefaultFactory(this IUnityContainer container)
+        {
+            container.RegisterFactory<IValidatorFactory>(c => new DefaultValidatorFactory(new UnityServiceProvider(c)));
+
+            return container;
+        }
+
+        
+        public static IUnityContainer RegisterFactory<TValidatorFactory>(this IUnityContainer container)
             where TValidatorFactory : IValidatorFactory
         {
             container.RegisterType<IValidatorFactory, TValidatorFactory>();
 
-            RegisterIoCValidationContext(container);
+            return container;
         }
 
-        public static void RegisterLiteralService<TLiteralService>(this IUnityContainer container, TLiteralService literalService)
+        public static IUnityContainer RegisterLiteralService<TLiteralService>(this IUnityContainer container, TLiteralService literalService)
             where TLiteralService : ILiteralService
         {
             container.RegisterInstance(literalService);
             container.RegisterType<ILiteralService, TLiteralService>();
+
+            return container;
         }
 
-        public static void RegisterLiteralService<TLiteralService>(this IUnityContainer container, ITypeLifetimeManager lifetimeManager)
+        public static IUnityContainer RegisterLiteralService<TLiteralService>(this IUnityContainer container, ITypeLifetimeManager lifetimeManager)
             where TLiteralService : ILiteralService
         {
             container.RegisterType<ILiteralService, TLiteralService>(lifetimeManager);
+
+            return container;
         }
 
-        public static void RegisterAllValidatorsAsSingletons(this IUnityContainer container, bool mapInterfaces = true)
+        public static IUnityContainer RegisterAllValidatorsAsSingletons(this IUnityContainer container, bool mapInterfaces = true)
         {
             container.RegisterAllValidatorsAsSingletons(AllClassesEx.FromAssembliesInBasePath(), mapInterfaces);
+
+            return container;
         }
 
-        public static void RegisterAllValidatorsAsSingletons(this IUnityContainer container, IEnumerable<Assembly> assemblies, bool mapInterfaces = true)
+        public static IUnityContainer RegisterAllValidatorsAsSingletons(this IUnityContainer container, IEnumerable<Assembly> assemblies, bool mapInterfaces = true)
         {
             container.RegisterAllValidatorsAsSingletons(
                 assemblies
@@ -69,9 +76,11 @@ namespace FluentValidation.IoC.Unity
                     x != typeof(AbstractValidator<>).Assembly)
                         .SelectMany(x => x.GetTypes()), 
                 mapInterfaces);
+
+            return container;
         }
 
-        public static void RegisterAllValidatorsAsSingletons(this IUnityContainer container, IEnumerable<Type> types, bool mapInterfaces = true)
+        public static IUnityContainer RegisterAllValidatorsAsSingletons(this IUnityContainer container, IEnumerable<Type> types, bool mapInterfaces = true)
         {
             var validatorTypes = types
                     .Where(x =>
@@ -119,6 +128,8 @@ namespace FluentValidation.IoC.Unity
                         Enumerable.Empty<Type>()),
                 WithName.Default,
                 _ => new SingletonLifetimeManager());
+
+            return container;
         }
 
 

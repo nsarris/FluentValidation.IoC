@@ -23,7 +23,7 @@ namespace FluentValidation.IoC
 
         public static void SetDependencyResolver(IServiceProvider value)
         {
-            dependencyResolver = new DependencyResolver(value);
+            dependencyResolver = new DefaultDependencyResolver(value);
         }
 
         public static IValidatorFactory GetValidatorFactory()

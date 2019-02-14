@@ -11,20 +11,18 @@ namespace FluentValidation.IoC
 
         public IoCValidationContext(IDependencyResolver resolver, IValidatorFactory validatorFactory)
         {
-            if (resolver is null) throw new ArgumentNullException(nameof(resolver));
-
-            this.DependencyResolver = resolver;
-            this.ValidatorFactory = validatorFactory ?? resolver.GetService<IValidatorFactory>();
+            this.DependencyResolver = resolver ?? throw new ArgumentNullException(nameof(resolver));
+            this.ValidatorFactory = validatorFactory ?? resolver.GetValidatorFactory();
         }
 
         public IoCValidationContext(IServiceProvider serviceProvider)
-            : this(new DependencyResolver(serviceProvider), null)
+            : this(new DefaultDependencyResolver(serviceProvider), null)
         {
-
+            
         }
 
         public IoCValidationContext(IServiceProvider serviceProvider, IValidatorFactory validatorFactory)
-            :this(new DependencyResolver(serviceProvider), validatorFactory)
+            :this(new DefaultDependencyResolver(serviceProvider), validatorFactory)
         {
             
         }
