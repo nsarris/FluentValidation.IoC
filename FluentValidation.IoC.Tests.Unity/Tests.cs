@@ -17,7 +17,7 @@ namespace FluentValidation.IoC.Tests
         [Test]
         public void Test()
         {
-            var validCustomer = Data.GetValidCustomer();
+            var validCustomer = Data.GetInValidCustomer();
             
             ValidationResult result;
             ILiteralService literalService;
