@@ -9,7 +9,7 @@ namespace FluentValidation.IoC
 {
     public static partial class FluentValidationExtensions
     {
-        #region Validation and Dependency resolition
+        #region Validation and Dependency resolution
 
         internal static IDependencyResolver GetResolver(this ValidationContext context)
         {
@@ -22,9 +22,9 @@ namespace FluentValidation.IoC
             return resolver;
         }
 
-        internal static IValidatorFactory GetFactory(this ValidationContext context)
+        internal static IValidatorFactory GetValidatorFactory(this ValidationContext context)
         {
-            var factory = (IValidatorFactory)context.RootContextData[Constants.ValidatorFactoryKeyLiteral]
+            var factory = context.GetResolver().GetValidatorFactory()
                 ?? ServiceLocator.GetValidatorFactory();
 
             if (factory == null)
@@ -47,46 +47,46 @@ namespace FluentValidation.IoC
             return GetResolver(context.ParentContext);
         }
 
-        internal static IValidatorFactory GetFactory(this CustomContext context)
+        internal static IValidatorFactory GetValidatorFactory(this CustomContext context)
         {
-            return GetFactory(context.ParentContext);
+            return GetValidatorFactory(context.ParentContext);
         }
 
-        internal static IValidatorFactory GetFactory(this PropertyValidatorContext context)
+        internal static IValidatorFactory GetValidatorFactory(this PropertyValidatorContext context)
         {
-            return GetFactory(context.ParentContext);
+            return GetValidatorFactory(context.ParentContext);
         }
 
         internal static TValidator ResolveValidator<TChild,TValidator>(this CustomContext context)
             where TValidator : IValidator<TChild>
         {
-            return GetFactory(context).GetValidator<TChild, TValidator>();
+            return GetValidatorFactory(context).GetValidator<TChild, TValidator>();
         }
 
         internal static TValidator ResolveValidator<TChild, TValidator>(this PropertyValidatorContext context)
             where TValidator : IValidator<TChild>
         {
-            return GetFactory(context).GetValidator<TChild, TValidator>();
+            return GetValidatorFactory(context).GetValidator<TChild, TValidator>();
         }
 
         internal static IValidator<TChild> ResolveValidator<TChild>(this PropertyValidatorContext context, Type validatorType)
         {
-            return GetFactory(context).GetValidator<TChild>(validatorType);
+            return GetValidatorFactory(context).GetValidator<TChild>(validatorType);
         }
 
         internal static IValidator<TChild> ResolveValidator<TChild>(this CustomContext context, Type validatorType)
         {
-            return GetFactory(context).GetValidator<TChild>(validatorType);
+            return GetValidatorFactory(context).GetValidator<TChild>(validatorType);
         }
 
         internal static IValidator<TChild> ResolveValidator<TChild>(this CustomContext context)
         {
-            return GetFactory(context).GetValidator<TChild>();
+            return GetValidatorFactory(context).GetValidator<TChild>();
         }
 
         internal static IValidator<TChild> ResolveValidator<TChild>(this PropertyValidatorContext context)
         {
-            return GetFactory(context).GetValidator<TChild>();
+            return GetValidatorFactory(context).GetValidator<TChild>();
         }
 
         internal static TDependency ResolveDependency<TDependency>(this CustomContext context)

@@ -7,74 +7,54 @@ namespace FluentValidation.IoC
     public sealed class IoCValidationContext : IDisposable
     {
         public IDependencyResolver DependencyResolver { get; }
-        public IValidatorFactory ValidatorFactory { get; }
-
-        public IoCValidationContext(IDependencyResolver resolver, IValidatorFactory validatorFactory)
+        
+        public IoCValidationContext(IDependencyResolver resolver)
         {
             this.DependencyResolver = resolver ?? throw new ArgumentNullException(nameof(resolver));
-            this.ValidatorFactory = validatorFactory ?? resolver.GetValidatorFactory();
         }
 
         public IoCValidationContext(IServiceProvider serviceProvider)
-            : this(new DefaultDependencyResolver(serviceProvider), null)
+            : this(new DefaultDependencyResolver(serviceProvider))
         {
             
         }
 
-        public IoCValidationContext(IServiceProvider serviceProvider, IValidatorFactory validatorFactory)
-            :this(new DefaultDependencyResolver(serviceProvider), validatorFactory)
-        {
-            
-        }
-
-        public IoCValidationContext(IDependencyResolver resolver)
-            :this(resolver, null)
-        {
-            
-        }
-
-
-        internal static ValidationContext<T> BuildContext<T>(T instance, IDependencyResolver resolver, IValidatorFactory validatorFactory)
+        internal static ValidationContext<T> BuildContext<T>(T instance, IDependencyResolver resolver)
         {
             var context = new ValidationContext<T>(instance);
             context.RootContextData.Add(Constants.DependencyResolverKeyLiteral, resolver);
-            context.RootContextData.Add(Constants.ValidatorFactoryKeyLiteral, validatorFactory);
             return context;
         }
 
-        internal static ValidationContext<T> SetupContext<T>(ValidationContext<T> context, IDependencyResolver resolver, IValidatorFactory validatorFactory)
+        internal static ValidationContext<T> SetupContext<T>(ValidationContext<T> context, IDependencyResolver resolver)
         {
             if (context.RootContextData.ContainsKey(Constants.DependencyResolverKeyLiteral))
-                throw new InvalidOperationException("RootCotextData already contains a container");
-
-            if (context.RootContextData.ContainsKey(Constants.ValidatorFactoryKeyLiteral))
-                throw new InvalidOperationException("RootCotextData already contains a validator factory");
+                throw new InvalidOperationException("RootContextData already contains a dependency resolver");
 
             context.RootContextData.Add(Constants.DependencyResolverKeyLiteral, resolver);
-            context.RootContextData.Add(Constants.ValidatorFactoryKeyLiteral, validatorFactory);
             return context;
         }
 
         public ValidationResult Validate<T>(T instance)
         {
-            var validator = ValidatorFactory.GetValidator<T>();
-            return validator.Validate(BuildContext(instance, DependencyResolver, ValidatorFactory));
+            var validator = DependencyResolver.GetValidatorFactory().GetValidator<T>();
+            return validator.Validate(BuildContext(instance, DependencyResolver));
         }
 
         public ValidationResult Validate<T>(ValidationContext<T> context)
         {
-            var validator = ValidatorFactory.GetValidator<T>();
-            return validator.Validate(SetupContext(context, DependencyResolver, ValidatorFactory));
+            var validator = DependencyResolver.GetValidatorFactory().GetValidator<T>();
+            return validator.Validate(SetupContext(context, DependencyResolver));
         }
 
         public IoCValidationContext<T> For<T>()
         {
-            return new IoCValidationContext<T>(ValidatorFactory);
+            return new IoCValidationContext<T>(DependencyResolver);
         }
 
         public IoCValidationInstanceContext<T> For<T>(T instance)
         {
-            return new IoCValidationInstanceContext<T>(instance, DependencyResolver, ValidatorFactory);
+            return new IoCValidationInstanceContext<T>(instance, DependencyResolver);
         }
 
         public void Dispose()

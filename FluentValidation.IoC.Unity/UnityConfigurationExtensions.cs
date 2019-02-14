@@ -15,7 +15,7 @@ namespace FluentValidation.IoC.Unity
     {
         private static void RegisterIoCValidationContext(this IUnityContainer container)
         {
-            container.RegisterType<IoCValidationContext>(new InjectionConstructor(new[] { typeof(IDependencyResolver), typeof(IValidatorFactory) }));
+            container.RegisterType<IoCValidationContext>(new InjectionConstructor(new[] { typeof(IDependencyResolver) }));
         }
 
         public static IUnityContainer RegisterValidationResolver<TResolver>(this IUnityContainer container)

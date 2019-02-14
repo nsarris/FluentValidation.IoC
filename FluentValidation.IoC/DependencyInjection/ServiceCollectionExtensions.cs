@@ -11,7 +11,7 @@ namespace FluentValidation.IoC
     {
         private static void RegisterIoCValidationContext(this IServiceCollection services)
         {
-            services.AddTransient(sp => new IoCValidationContext(sp.GetRequiredService<IDependencyResolver>(), sp.GetRequiredService<IValidatorFactory>()));
+            services.AddTransient(sp => new IoCValidationContext(sp.GetRequiredService<IDependencyResolver>()));
         }
 
         public static IServiceCollection AddValidationIocExtensions(this IServiceCollection services, IEnumerable<Assembly> assemblies = null)

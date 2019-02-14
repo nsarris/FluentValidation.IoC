@@ -42,7 +42,7 @@ namespace FluentValidation.IoC
                 || GetValidatorFactory() is null)
                 throw new InvalidOperationException("Cannot build an IoC Validation context if the DependencyResolver or ValidatorFactory are not set in ServiceLocator.");
 
-            return new IoCValidationContext(GetDependencyResolver(), GetValidatorFactory());
+            return new IoCValidationContext(GetDependencyResolver());
         }
     }
 }
