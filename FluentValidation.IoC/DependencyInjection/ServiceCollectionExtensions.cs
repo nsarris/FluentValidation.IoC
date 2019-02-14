@@ -14,6 +14,8 @@ namespace FluentValidation.IoC
             services.AddTransient(sp => new IoCValidationContext(sp.GetRequiredService<IDependencyResolver>(), sp.GetRequiredService<IValidatorFactory>()));
         }
 
+        public static IServiceCollection AddValidationIocExtensions(this IServiceCollection services, IEnumerable<Assembly> assemblies = null)
+            => AddValidationIocExtensions<DefaultDependencyResolver>(services, assemblies);
 
         public static IServiceCollection AddValidationIocExtensions<TResolver>(this IServiceCollection services, IEnumerable<Assembly> assemblies = null)
             where TResolver : class, IDependencyResolver
@@ -24,10 +26,18 @@ namespace FluentValidation.IoC
                 .AddValidators(assemblies);
         }
 
+        public static IServiceCollection AddDefaultResolver(this IServiceCollection services)
+        {
+            return services.AddValidationResolver<DefaultDependencyResolver>();
+        }
+
         public static IServiceCollection AddValidationResolver<TResolver>(this IServiceCollection services)
             where TResolver : class, IDependencyResolver
         {
-            services.AddTransient<IDependencyResolver, TResolver>();
+            if (typeof(TResolver) == typeof(DefaultDependencyResolver))
+                services.AddTransient<IDependencyResolver>(sp => new DefaultDependencyResolver(sp));
+            else
+                services.AddTransient<IDependencyResolver, TResolver>();
 
             RegisterIoCValidationContext(services);
 
@@ -70,7 +80,7 @@ namespace FluentValidation.IoC
 
         public static IServiceCollection AddValidators(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Singleton, bool mapInterfaces = true)
         {
-            services.AddValidators((IEnumerable<Type >)null, lifetime, mapInterfaces);
+            services.AddValidators((IEnumerable<Type>)null, lifetime, mapInterfaces);
 
             return services;
         }
@@ -89,8 +99,10 @@ namespace FluentValidation.IoC
         {
             services.Scan(x =>
                 (validatorTypes == null ? x.FromApplicationDependencies() : x.AddTypes(validatorTypes))
-                .AddClasses(c => c.AssignableTo(typeof(IValidator<>)))
-                .AsMatchingInterface()
+                .AddClasses(c => c
+                    .Where(cc => cc.Assembly != typeof(IValidator).Assembly)
+                    .AssignableTo(typeof(IValidator<>)))
+                .AsImplementedInterfaces()
                 .AsSelf()
                 .WithLifetime(lifetime));
 

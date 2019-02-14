@@ -32,6 +32,7 @@ namespace FluentValidation.IoC
         {
             return AutoDiscoverValidatorTypes(assemblies.SelectMany(a => a.GetTypes()));
         }
+
         public static IEnumerable<Type> AutoDiscoverValidatorTypes(IEnumerable<Type> types)
         {
             var validatorTypes = types

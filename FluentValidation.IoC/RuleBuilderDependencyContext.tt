@@ -1,0 +1,78 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<# 
+	var numOfGenericParameters = 13; 
+	var dependencyGenericName = "TDependency";
+	var dependencyParameterName = "dependency";
+#>
+using System;
+using System.Linq;
+using FluentValidation;
+using FluentValidation.Results;
+using FluentValidation.Validators;
+
+namespace FluentValidation.IoC
+{
+<# foreach (var i in Enumerable.Range(1, numOfGenericParameters)) { 
+	var generics = string.Join(", ",Enumerable.Range(1, i).Select(x => dependencyGenericName + x));
+	var nextGeneric = dependencyGenericName + (i + 1);
+	var dependencies = string.Join(", ",Enumerable.Range(1, i).Select(x => dependencyParameterName + x));
+#>	public sealed class RuleBuilderDependencyContext<T, TChild, <#= generics #>>
+    {
+        readonly IRuleBuilder<T, TChild> ruleBuilder;
+
+        public RuleBuilderDependencyContext(IRuleBuilder<T, TChild> ruleBuilder)
+        {
+            this.ruleBuilder = ruleBuilder;
+        }
+
+        public IRuleBuilderOptions<T, TChild> Custom(Func<T, TChild, <#= generics #>, bool> validatorFunction)
+        {
+            return ruleBuilder
+                .Must((parent, child, context) =>
+                {
+<# foreach (var j in Enumerable.Range(1, i)) { #>
+					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
+<# } #>
+                    return validatorFunction(parent, child, <#= dependencies #>);
+                });
+        }
+
+        public IRuleBuilderInitial<T, TChild> Custom(Action<T, TChild, <#= generics #>, CustomContext> validationAction)
+        {
+            return ruleBuilder
+                .Custom((x, context) =>
+                {
+<# foreach (var j in Enumerable.Range(1, i)) { #>
+					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
+<# } #>
+                    var parent = (T)context.ParentContext.InstanceToValidate;
+                    validationAction(parent, x, <#= dependencies #>, context);
+                });
+        }
+
+        public IRuleBuilderInitial<T, TChild> Custom(Func<T, TChild, <#= generics #>, ValidationResult> validatorFunction)
+        {
+            return ruleBuilder
+                .Custom((x, context) =>
+                {
+<# foreach (var j in Enumerable.Range(1, i)) { #>
+					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
+<# } #>
+                    var parent = (T)context.ParentContext.InstanceToValidate;
+                    context.Append(validatorFunction(parent, x, <#= dependencies #>));
+                });
+        }
+<# if (i < numOfGenericParameters) { #>
+        public RuleBuilderDependencyContext<T, TChild, <#= generics #>, <#= nextGeneric #>> Using<<#= nextGeneric #>>()
+        {
+            return new RuleBuilderDependencyContext<T, TChild, <#= generics #>, <#= nextGeneric #>>(ruleBuilder);
+        }
+<# } #>
+    }
+<# } #>
+}
