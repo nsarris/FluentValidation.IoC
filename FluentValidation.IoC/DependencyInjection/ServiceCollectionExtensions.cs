@@ -12,12 +12,12 @@ namespace FluentValidation.IoC
         public static IServiceCollection AddFluentValidationIocExtensions(this IServiceCollection services, IEnumerable<Assembly> assemblies = null)
         {
             return services
-                .AddIoCValidationContext()
+                .AddValidationContextProvider()
                 .AddDefaultValidatorFactory()
                 .AddValidators(assemblies);
         }
 
-        public static IServiceCollection AddIoCValidationContext(this IServiceCollection services)
+        public static IServiceCollection AddValidationContextProvider(this IServiceCollection services)
         {
             return services.AddTransient(sp => new ValidationContextProvider(sp.GetRequiredService<IServiceProvider>()));
         }

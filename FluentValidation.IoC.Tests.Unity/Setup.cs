@@ -22,28 +22,22 @@ namespace FluentValidation.IoC.Tests
             //This will make sure each IoCValidationContext gets a child container
             //so disposing it wont dispose the base container
             container
-                .RegisterServiceProvider()
+                //Register container as an IServiceProvider
+                .RegisterAsServiceProvider()
+                //Register the ValidationContextProvider
+                .RegisterValidationContextProvider()
+                //Register container as a default validator factory
                 .RegisterDefaultValidatorFactory()
-
-            //This will make sure each IoCValidationContext gets a shared container which it doesn't dispose
-            //when the context is disposed
-            //container.RegisterResolverAndFactory<UnityValidatorResolver>();
-
-            //Using the following resolver will dispose the container after each resolution context is disposed
-            //This only usefull if the container used is also injected as a dependency (e.g. child by factory)
-            //container.RegisterResolverAndFactory<UnityValidatorDisposableResolver>();
-
-            //Caution: Registration by conenvtion AllClasses is broken in .net framework in Unit.Registration by convention
-            //from version 2.1.6 up to 2.1.8 
+                //Register all validators in assemblies as singletons
                 .RegisterAllValidators()
 
             //Registration from specific assembly
-            //container.RegisterAllValidatorsAsSingletons(new[] { this.GetType().Assembly });
+            //  .RegisterAllValidators(new[] { this.GetType().Assembly });
 
             //Manual registration
-            //container.RegisterType<IValidator<Customer>, CustomerValidator>();
-            //container.RegisterType<IValidator<Address>, AddressValidator>();
-            //container.RegisterType<IValidator<Phone>, PhoneValidator>();
+            //  .RegisterType<IValidator<Customer>, CustomerValidator>();
+            //  .RegisterType<IValidator<Address>, AddressValidator>();
+            //  .RegisterType<IValidator<Phone>, PhoneValidator>();
 
             //Register Literal Service
                 .RegisterLiteralService<MockLiteralService>(new SingletonLifetimeManager())

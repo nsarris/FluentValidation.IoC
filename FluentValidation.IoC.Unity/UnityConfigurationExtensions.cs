@@ -13,18 +13,15 @@ namespace FluentValidation.IoC.Unity
 {
     public static class UnityConfigurationExtensions
     {
-        private static void RegisterIoCValidationContext(this IUnityContainer container)
+        public static IUnityContainer RegisterValidationContextProvider(this IUnityContainer container)
         {
-            container.RegisterType<ValidationContextProvider>(new InjectionConstructor(new[] { typeof(IServiceProvider) }));
+            return container.RegisterType<ValidationContextProvider>(new InjectionConstructor(new[] { typeof(IServiceProvider) }));
         }
 
-        public static IUnityContainer RegisterServiceProvider(this IUnityContainer container)
+        public static IUnityContainer RegisterAsServiceProvider(this IUnityContainer container)
         {
-            container.RegisterFactory<IServiceProvider>(c => new UnityServiceProvider(c));
-
-            RegisterIoCValidationContext(container);
-
-            return container;
+            return 
+                container.RegisterFactory<IServiceProvider>(c => new UnityServiceProvider(c));
         }
 
         public static IUnityContainer RegisterDefaultValidatorFactory(this IUnityContainer container)

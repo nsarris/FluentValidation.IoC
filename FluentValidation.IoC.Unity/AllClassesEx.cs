@@ -14,12 +14,11 @@ namespace FluentValidation.IoC.Unity
         private static readonly string UnityProductName = GetUnityProductName();
         private static readonly string[] assemblyExtensions = new[] { ".dll",".exe" };
 
-#if NETCOREAPP1_0
         private static string GetBasePath()
         {
-            return System.Windows.ApplicationModel.Package.Current.InstalledLocation;
+            return AppContext.BaseDirectory;
         }
-#else
+
         private static string GetSearchPath()
         {
             return (AppDomain.CurrentDomain.RelativeSearchPath == null)
@@ -27,16 +26,11 @@ namespace FluentValidation.IoC.Unity
                     : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.RelativeSearchPath);
         }
 
-        private static string GetBasePath()
-        {
-            return AppDomain.CurrentDomain.BaseDirectory;
-        }
-
         public static IEnumerable<Type> FromAssembliesInSearchPath(bool includeSystemAssemblies = false, bool includeUnityAssemblies = false, bool skipOnError = true, bool recursive = true)
         {
             return FromAssembliesInPath(GetSearchPath(), includeSystemAssemblies, includeUnityAssemblies, skipOnError);
         }
-#endif
+
         public static IEnumerable<Type> FromAssembliesInBasePath(bool includeSystemAssemblies = false, bool includeUnityAssemblies = false, bool skipOnError = true, bool recursive = true)
         {
             return FromAssembliesInPath(GetBasePath(), includeSystemAssemblies, includeUnityAssemblies, skipOnError, recursive);

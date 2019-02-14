@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FluentValidation.IoC.Tests.Services
 {
-    class MockPhoneBookService : IPhoneBookService
+    public class MockPhoneBookService : IPhoneBookService
     {
         public bool IsExistingNumber(string phoneNumber)
         {

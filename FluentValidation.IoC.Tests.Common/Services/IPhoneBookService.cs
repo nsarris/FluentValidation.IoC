@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FluentValidation.IoC.Tests.Services
 {
-    interface IPhoneBookService
+    public interface IPhoneBookService
     {
         bool IsExistingNumber(string phoneNumber);
         bool IsLandline(string phoneNumber);
