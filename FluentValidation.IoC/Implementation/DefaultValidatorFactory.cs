@@ -28,22 +28,22 @@ namespace FluentValidation.IoC
 
         public IValidator GetValidator(Type type)
         {
-            return GetValidatorInternal(type, false);
+            return GetValidatorInternal(typeof(IValidator<>).MakeGenericType(type), false);
         }
 
-        public TValidator GetValidator<T, TValidator>()
-            where TValidator : IValidator<T>
+        public TValidator GetSpecificValidator<TValidator>()
         {
             return (TValidator)GetValidatorInternal(typeof(TValidator), true);
 
         }
 
-        public IValidator<T> GetValidator<T>(Type validatorType)
+        public IValidator GetSpecificValidator(Type validatorType)
         {
-            if (!typeof(IValidator<T>).IsAssignableFrom(validatorType))
-                throw new InvalidOperationException($"Type {validatorType.Name} does not implement IValidator<{typeof(T).Name}>");
+            //if (!typeof(IValidator<T>).IsAssignableFrom(validatorType))
+            //    throw new InvalidOperationException($"Type {validatorType.Name} does not implement IValidator<{typeof(T).Name}>");
 
-            return (IValidator<T>)GetValidatorInternal(typeof(IValidator<T>), true);
+            //return (IValidator<T>)GetValidatorInternal(validatorType, true);
+            return (IValidator)GetValidatorInternal(validatorType, true);
         }
     }
 }

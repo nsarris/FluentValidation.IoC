@@ -8,7 +8,7 @@ namespace FluentValidation.IoC
 {
     public interface IValidatorFactory : FluentValidation.IValidatorFactory
     {
-        TValidator GetValidator<T, TValidator>() where TValidator : IValidator<T>;
-        IValidator<T> GetValidator<T>(Type validatorType);
+        IValidator GetSpecificValidator(Type validatorType);
+        TValidator GetSpecificValidator<TValidator>();
     }
 }

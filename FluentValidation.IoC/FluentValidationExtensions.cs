@@ -60,23 +60,23 @@ namespace FluentValidation.IoC
         internal static TValidator ResolveValidator<TChild,TValidator>(this CustomContext context)
             where TValidator : IValidator<TChild>
         {
-            return GetValidatorFactory(context).GetValidator<TChild, TValidator>();
+            return GetValidatorFactory(context).GetSpecificValidator<TValidator>();
         }
 
         internal static TValidator ResolveValidator<TChild, TValidator>(this PropertyValidatorContext context)
             where TValidator : IValidator<TChild>
         {
-            return GetValidatorFactory(context).GetValidator<TChild, TValidator>();
+            return GetValidatorFactory(context).GetSpecificValidator<TValidator>();
         }
 
         internal static IValidator<TChild> ResolveValidator<TChild>(this PropertyValidatorContext context, Type validatorType)
         {
-            return GetValidatorFactory(context).GetValidator<TChild>(validatorType);
+            return (IValidator<TChild>)GetValidatorFactory(context).GetSpecificValidator(validatorType);
         }
 
         internal static IValidator<TChild> ResolveValidator<TChild>(this CustomContext context, Type validatorType)
         {
-            return GetValidatorFactory(context).GetValidator<TChild>(validatorType);
+            return (IValidator<TChild>)GetValidatorFactory(context).GetSpecificValidator(validatorType);
         }
 
         internal static IValidator<TChild> ResolveValidator<TChild>(this CustomContext context)
