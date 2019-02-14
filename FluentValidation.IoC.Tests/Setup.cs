@@ -22,8 +22,8 @@ namespace FluentValidation.IoC.Tests
             //This will make sure each IoCValidationContext gets a child container
             //so disposing it wont dispose the base container
             container
-                .RegisterResolver<UnityValidatorHierarchicalResolver>()
-                .RegisterDefaultFactory()
+                .RegisterValidationResolver<UnityValidatorHierarchicalResolver>()
+                .RegisterDefaultValidatorFactory()
 
             //This will make sure each IoCValidationContext gets a shared container which it doesn't dispose
             //when the context is disposed
@@ -35,7 +35,7 @@ namespace FluentValidation.IoC.Tests
 
             //Caution: Registration by conenvtion AllClasses is broken in .net framework in Unit.Registration by convention
             //from version 2.1.6 up to 2.1.8 
-                .RegisterAllValidatorsAsSingletons()
+                .RegisterAllValidators()
 
             //Registration from specific assembly
             //container.RegisterAllValidatorsAsSingletons(new[] { this.GetType().Assembly });

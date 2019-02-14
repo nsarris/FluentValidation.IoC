@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FluentValidation.IoC
 {
-    internal static class ReflectionHelper
+    internal static class PropertyAccessor
     {
         static readonly Dictionary<(Type, MemberInfo), Delegate> cache = new Dictionary<(Type, MemberInfo), Delegate>();
 
