@@ -10,6 +10,9 @@ namespace FluentValidation.IoC
     {
         private static bool IsSubclassOfGeneric(Type type, Type openGenericType)
         {
+            if (type.BaseType == null)
+                return false;
+
             return IsOrSubclassOfGeneric(type.BaseType, openGenericType);
         }
 
@@ -73,6 +76,5 @@ namespace FluentValidation.IoC
 
             return validatorTypes.Select(x => x.Validators.OrderByDescending(v => v.IsDefault).Select(v => v.Type).First());
         }
-
     }
 }

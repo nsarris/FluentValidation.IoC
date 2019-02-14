@@ -19,7 +19,7 @@ namespace FluentValidation.IoC
 
         public static IServiceCollection AddIoCValidationContext(this IServiceCollection services)
         {
-            return services.AddTransient(sp => new IoCValidationContext(sp.GetRequiredService<IServiceProvider>()));
+            return services.AddTransient(sp => new ValidationContextProvider(sp.GetRequiredService<IServiceProvider>()));
         }
 
         

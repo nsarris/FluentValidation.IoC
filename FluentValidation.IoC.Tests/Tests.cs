@@ -71,7 +71,7 @@ namespace FluentValidation.IoC.Tests
             //Normally the IoCValidationContext would be injected in the caller's constructor
             using (var scope = Setup.Container.CreateChildContainer())
             {
-                var validationContext = Setup.Container.Resolve<IoCValidationContext>();
+                var validationContext = Setup.Container.Resolve<ValidationContextProvider>();
                 result = validationContext.Validate(validCustomer);
                 literalService = (ILiteralService)validationContext.ServiceProvider.GetService(typeof(ILiteralService));
             }

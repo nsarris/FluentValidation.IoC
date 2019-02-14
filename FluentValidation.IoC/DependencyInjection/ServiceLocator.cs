@@ -31,13 +31,13 @@ namespace FluentValidation.IoC
             validatorFactory = value;
         }
 
-        public static IoCValidationContext CreateIoCValidationContext()
+        public static ValidationContextProvider CreateIoCValidationContext()
         {
             if (GetServiceProvider() is null 
                 || GetValidatorFactory() is null)
                 throw new InvalidOperationException("Cannot build an IoC Validation context if the DependencyResolver or ValidatorFactory are not set in ServiceLocator.");
 
-            return new IoCValidationContext(GetServiceProvider());
+            return new ValidationContextProvider(GetServiceProvider());
         }
     }
 }

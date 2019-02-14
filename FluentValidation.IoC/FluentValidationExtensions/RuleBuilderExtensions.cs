@@ -9,100 +9,6 @@ namespace FluentValidation.IoC
 {
     public static partial class RuleBuilderExtensions
     {
-        #region Validation and Dependency resolution
-
-        internal static IServiceProvider GetServiceProvider(this ValidationContext context)
-        {
-            var serviceProvider = (IServiceProvider)context.RootContextData[Constants.ServiceProviderKeyLiteral]
-                    ?? ServiceLocator.GetServiceProvider();
-
-            if (serviceProvider == null)
-                throw new InvalidOperationException("Could not get a service provider for validation. Either use an IoCValidationContext or register a global service provider in ServiceLocator.");
-
-            return serviceProvider;
-        }
-
-        internal static IValidatorFactory GetValidatorFactory(this ValidationContext context)
-        {
-            var factory = context.GetServiceProvider().GetValidatorFactory()
-                ?? ServiceLocator.GetValidatorFactory();
-
-            if (factory == null)
-                throw new InvalidOperationException("Could not get a validator factory. Either use an IoCValidationContext or register a global validator factory in ServiceLocator.");
-
-            return factory;
-        }
-
-        internal static ILiteralService GetLiteralService(this ValidationContext context)
-        {
-            return context.GetServiceProvider().GetService<ILiteralService>();
-        }
-
-        internal static IServiceProvider GetServiceProvider(this CustomContext context)
-        {
-            return GetServiceProvider(context.ParentContext);
-        }
-        internal static IServiceProvider GetServiceProvider(this PropertyValidatorContext context)
-        {
-            return GetServiceProvider(context.ParentContext);
-        }
-
-        internal static IValidatorFactory GetValidatorFactory(this CustomContext context)
-        {
-            return GetValidatorFactory(context.ParentContext);
-        }
-
-        internal static IValidatorFactory GetValidatorFactory(this PropertyValidatorContext context)
-        {
-            return GetValidatorFactory(context.ParentContext);
-        }
-
-        internal static TValidator ResolveValidator<TChild,TValidator>(this CustomContext context)
-            where TValidator : IValidator<TChild>
-        {
-            return GetValidatorFactory(context).GetSpecificValidator<TValidator>();
-        }
-
-        internal static TValidator ResolveValidator<TChild, TValidator>(this PropertyValidatorContext context)
-            where TValidator : IValidator<TChild>
-        {
-            return GetValidatorFactory(context).GetSpecificValidator<TValidator>();
-        }
-
-        internal static IValidator<TChild> ResolveValidator<TChild>(this PropertyValidatorContext context, Type validatorType)
-        {
-            return (IValidator<TChild>)GetValidatorFactory(context).GetSpecificValidator(validatorType);
-        }
-
-        internal static IValidator<TChild> ResolveValidator<TChild>(this CustomContext context, Type validatorType)
-        {
-            return (IValidator<TChild>)GetValidatorFactory(context).GetSpecificValidator(validatorType);
-        }
-
-        internal static IValidator<TChild> ResolveValidator<TChild>(this CustomContext context)
-        {
-            return GetValidatorFactory(context).GetValidator<TChild>();
-        }
-
-        internal static IValidator<TChild> ResolveValidator<TChild>(this PropertyValidatorContext context)
-        {
-            return GetValidatorFactory(context).GetValidator<TChild>();
-        }
-
-        internal static TDependency ResolveDependency<TDependency>(this CustomContext context)
-        {
-            return GetServiceProvider(context).GetService<TDependency>();
-        }
-
-        internal static TDependency ResolveDependency<TDependency>(this PropertyValidatorContext context)
-        {
-            return GetServiceProvider(context).GetService<TDependency>();
-        }
-
-
-
-        #endregion
-
         #region ExecuteChild  
 
         internal static ValidationResult ExecuteChild<TChild>(this CustomContext context, TChild instance, IValidator<TChild> childValidator)
@@ -117,7 +23,7 @@ namespace FluentValidation.IoC
 
         internal static ValidationResult ExecuteChild<TChild>(this CustomContext context, TChild instance, Type validatorType)
         {
-            var childValidator = ResolveValidator<TChild>(context, validatorType);
+            var childValidator = context.ResolveValidator<TChild>(validatorType);
             return ExecuteChild(context, instance, childValidator);
         }
 
@@ -132,7 +38,7 @@ namespace FluentValidation.IoC
                 {
                     if (x != null)
                     {
-                        var validator = ResolveValidator<TChild>(context);
+                        var validator = context.ResolveValidator<TChild>();
                         context.Append(ExecuteChild(context, x, validator));
                     }
                 });
@@ -145,7 +51,7 @@ namespace FluentValidation.IoC
             return ruleBuilder
                 .Must((parent, child, context) =>
                 {
-                    var validator = ResolveValidator<TChild>(context);
+                    var validator = context.ResolveValidator<TChild>();
                     return validatorFunction(parent, child, validator);
                 });
         }
@@ -157,7 +63,7 @@ namespace FluentValidation.IoC
             return ruleBuilder
                 .Custom((x, context) =>
                 {
-                    var validator = ResolveValidator<TChild>(context);
+                    var validator = context.ResolveValidator<TChild>();
                     var parent = (T)context.ParentContext.InstanceToValidate;
                     context.Append(validatorFunction(parent, x, validator));
                 });
@@ -184,7 +90,7 @@ namespace FluentValidation.IoC
                 {
                     if (x != null)
                     {
-                        var validator = ResolveValidator<TChild>(context, validatorType);
+                        var validator = context.ResolveValidator<TChild>(validatorType);
                         context.Append(ExecuteChild(context, x, validator));
                     }
                 });
@@ -200,7 +106,7 @@ namespace FluentValidation.IoC
             return ruleBuilder
                 .Must((parent, child, context) =>
                 {
-                    var validator = ResolveValidator<TChild>(context, validatorType);
+                    var validator = context.ResolveValidator<TChild>(validatorType);
                     return validatorFunction(parent, child, validator);
                 });
         }
@@ -215,7 +121,7 @@ namespace FluentValidation.IoC
             return ruleBuilder
                 .Custom((x, context) =>
                 {
-                    var validator = ResolveValidator<TChild>(context, validatorType);
+                    var validator = context.ResolveValidator<TChild>(validatorType);
                     var parent = (T)context.ParentContext.InstanceToValidate;
                     context.Append(validatorFunction(parent, x, validator));
                 });
@@ -254,7 +160,7 @@ namespace FluentValidation.IoC
             return ruleBuilder
                 .Custom((x, context) =>
                 {
-                    var resolver = GetServiceProvider(context);
+                    var resolver = context.GetServiceProvider();
                     var parent = (T)context.ParentContext.InstanceToValidate;
                     context.Append(validatorFunction(parent, x, resolver));
                 });
@@ -326,7 +232,7 @@ namespace FluentValidation.IoC
                 || string.IsNullOrEmpty(code))
                 throw new InvalidOperationException("Could not get code from validator. Please call WithErrorCode prior to ResolveMessage. Custom sources are not supported.");
 
-            return ResolveMessage(ruleBuilder, code);
+            return ruleBuilder.ResolveMessage(code);
         }
 
         #endregion
