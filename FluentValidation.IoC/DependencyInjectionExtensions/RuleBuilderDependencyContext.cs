@@ -46,7 +46,7 @@ namespace FluentValidation.IoC
                     context.Append(validatorFunction(parent, x, dependency1));
                 });
         }
-        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2> Using<TDependency2>()
+        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2> Inject<TDependency2>()
         {
             return new RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2>(ruleBuilder);
         }
@@ -94,7 +94,7 @@ namespace FluentValidation.IoC
                     context.Append(validatorFunction(parent, x, dependency1, dependency2));
                 });
         }
-        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3> Using<TDependency3>()
+        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3> Inject<TDependency3>()
         {
             return new RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3>(ruleBuilder);
         }
@@ -145,7 +145,7 @@ namespace FluentValidation.IoC
                     context.Append(validatorFunction(parent, x, dependency1, dependency2, dependency3));
                 });
         }
-        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4> Using<TDependency4>()
+        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4> Inject<TDependency4>()
         {
             return new RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4>(ruleBuilder);
         }
@@ -199,7 +199,7 @@ namespace FluentValidation.IoC
                     context.Append(validatorFunction(parent, x, dependency1, dependency2, dependency3, dependency4));
                 });
         }
-        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5> Using<TDependency5>()
+        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5> Inject<TDependency5>()
         {
             return new RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5>(ruleBuilder);
         }
@@ -256,7 +256,7 @@ namespace FluentValidation.IoC
                     context.Append(validatorFunction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5));
                 });
         }
-        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6> Using<TDependency6>()
+        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6> Inject<TDependency6>()
         {
             return new RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6>(ruleBuilder);
         }
@@ -316,7 +316,7 @@ namespace FluentValidation.IoC
                     context.Append(validatorFunction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6));
                 });
         }
-        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7> Using<TDependency7>()
+        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7> Inject<TDependency7>()
         {
             return new RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7>(ruleBuilder);
         }
@@ -379,7 +379,7 @@ namespace FluentValidation.IoC
                     context.Append(validatorFunction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7));
                 });
         }
-        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8> Using<TDependency8>()
+        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8> Inject<TDependency8>()
         {
             return new RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8>(ruleBuilder);
         }
@@ -445,7 +445,7 @@ namespace FluentValidation.IoC
                     context.Append(validatorFunction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8));
                 });
         }
-        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9> Using<TDependency9>()
+        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9> Inject<TDependency9>()
         {
             return new RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9>(ruleBuilder);
         }
@@ -514,7 +514,7 @@ namespace FluentValidation.IoC
                     context.Append(validatorFunction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9));
                 });
         }
-        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10> Using<TDependency10>()
+        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10> Inject<TDependency10>()
         {
             return new RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10>(ruleBuilder);
         }
@@ -586,7 +586,7 @@ namespace FluentValidation.IoC
                     context.Append(validatorFunction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10));
                 });
         }
-        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11> Using<TDependency11>()
+        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11> Inject<TDependency11>()
         {
             return new RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11>(ruleBuilder);
         }
@@ -661,7 +661,7 @@ namespace FluentValidation.IoC
                     context.Append(validatorFunction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11));
                 });
         }
-        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12> Using<TDependency12>()
+        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12> Inject<TDependency12>()
         {
             return new RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12>(ruleBuilder);
         }
@@ -739,7 +739,7 @@ namespace FluentValidation.IoC
                     context.Append(validatorFunction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11, dependency12));
                 });
         }
-        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12, TDependency13> Using<TDependency13>()
+        public RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12, TDependency13> Inject<TDependency13>()
         {
             return new RuleBuilderDependencyContext<T, TChild, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12, TDependency13>(ruleBuilder);
         }

@@ -68,7 +68,7 @@ namespace FluentValidation.IoC
                 });
         }
 <# if (i < numOfGenericParameters) { #>
-        public RuleBuilderDependencyContext<T, TChild, <#= generics #>, <#= nextGeneric #>> Using<<#= nextGeneric #>>()
+        public RuleBuilderDependencyContext<T, TChild, <#= generics #>, <#= nextGeneric #>> Inject<<#= nextGeneric #>>()
         {
             return new RuleBuilderDependencyContext<T, TChild, <#= generics #>, <#= nextGeneric #>>(ruleBuilder);
         }

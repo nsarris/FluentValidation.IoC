@@ -12,16 +12,16 @@ namespace FluentValidation.IoC.Tests.Validators
             RuleFor(x => x.City).NotEmpty();
 
             RuleFor(x => x.PrimaryPhone)
-                .WithIoC()
-                    .SetValidator<PhoneValidator>();
+                .WithDependencies()
+                    .InjectValidator<PhoneValidator>();
                     //.Custom((parent, x, resolver) =>
                     //{
                     //    return true;
                     //});
 
             RuleForEach(x => x.OtherPhones)
-                .WithIoC()
-                    .SetValidator<PhoneValidator>();
+                .WithDependencies()
+                    .InjectValidator<PhoneValidator>();
         }
     }
 
