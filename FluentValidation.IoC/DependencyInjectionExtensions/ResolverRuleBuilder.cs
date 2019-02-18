@@ -28,7 +28,7 @@ namespace FluentValidation.IoC
 
         #region Specify validator to resolve
 
-        public IRuleBuilderOptions<T, TChild> SetValidator<TValidator>(params string[] ruleSets)
+        public IRuleBuilderOptions<T, TChild> InjectValidator<TValidator>(params string[] ruleSets)
             where TValidator : IValidator<TChild>
         {
             var adaptor = new ChildValidatorAdaptor(context =>
@@ -43,7 +43,7 @@ namespace FluentValidation.IoC
             return ruleBuilder.SetValidator(adaptor);
         }
 
-        public IRuleBuilderOptions<T, TChild> SetValidator<TValidator>(Func<T, TChild, TValidator, bool> validatorFunction)
+        public IRuleBuilderOptions<T, TChild> InjectValidator<TValidator>(Func<T, TChild, TValidator, bool> validatorFunction)
             where TValidator : IValidator<TChild>
         {
             return ruleBuilder
@@ -54,7 +54,7 @@ namespace FluentValidation.IoC
                 });
         }
 
-        public IRuleBuilderOptions<T, TChild> SetValidator<TValidator>(Func<T, TChild, TValidator, ValidationResult> validatorFunction)
+        public IRuleBuilderOptions<T, TChild> InjectValidator<TValidator>(Func<T, TChild, TValidator, ValidationResult> validatorFunction)
             where TValidator : IValidator<TChild>
         {
             return
@@ -71,7 +71,7 @@ namespace FluentValidation.IoC
 
         #region Using Dependency
 
-        public RuleBuilderDependencyContext<T, TChild, TDependency> Using<TDependency>()
+        public RuleBuilderDependencyContext<T, TChild, TDependency> Inject<TDependency>()
         {
             return new RuleBuilderDependencyContext<T, TChild, TDependency>(ruleBuilder);
         }

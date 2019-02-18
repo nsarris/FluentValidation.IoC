@@ -10,12 +10,12 @@ namespace FluentValidation.IoC.Tests.Validators
             RuleFor(x => x.Id).NotEmpty().ResolveName();
             RuleFor(x => x.Name).NotEmpty().ResolveName();
             RuleFor(x => x.VatNumber)
-                .WithIoC()
-                .Using<IVatService>()
-                .Custom((customer, vatNumber, vatService) =>
-                {
-                    return vatService.IsValid(vatNumber);
-                })
+                .WithDependencies()
+                    .Inject<IVatService>()
+                    .Custom((customer, vatNumber, vatService) =>
+                    {
+                        return vatService.IsValid(vatNumber);
+                    })
                 .WithErrorCode("VatValidationServiceFailure")
                 .ResolveMessage();
 
@@ -23,8 +23,8 @@ namespace FluentValidation.IoC.Tests.Validators
             RuleFor(x => x.MainAddress)
                 .NotNull()
                 .ResolveName()
-                .WithIoC()
-                    .SetValidator<MainAddressValidator>();
+                .WithDependencies()
+                    .InjectValidator<MainAddressValidator>();
         }
     }
 }

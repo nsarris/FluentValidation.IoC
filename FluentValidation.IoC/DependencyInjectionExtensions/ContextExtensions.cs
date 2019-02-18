@@ -38,11 +38,6 @@ namespace FluentValidation.IoC
             return factory;
         }
 
-        public static ILiteralService GetLiteralService(this ValidationContext context)
-        {
-            return context.GetServiceProvider().GetRequiredService<ILiteralService>();
-        }
-
         public static ValidationResult ValidateUsing<TValidator>(this ValidationContext context)
             where TValidator : IValidator
             => context.GetValidatorFactory().GetSpecificValidator<TValidator>().Validate(context);
