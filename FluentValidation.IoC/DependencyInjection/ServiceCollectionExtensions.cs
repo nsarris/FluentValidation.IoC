@@ -57,14 +57,14 @@ namespace FluentValidation.IoC
         }
 
 
-        public static IServiceCollection AddValidators(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Singleton, bool mapInterfaces = true)
+        public static IServiceCollection AddValidators(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Transient, bool mapInterfaces = true)
         {
             services.AddValidators((IEnumerable<Type>)null, lifetime, mapInterfaces);
 
             return services;
         }
 
-        public static IServiceCollection AddValidators(this IServiceCollection services, IEnumerable<Assembly> assemblies, ServiceLifetime lifetime = ServiceLifetime.Singleton, bool mapInterfaces = true)
+        public static IServiceCollection AddValidators(this IServiceCollection services, IEnumerable<Assembly> assemblies, ServiceLifetime lifetime = ServiceLifetime.Transient, bool mapInterfaces = true)
         {
             services.AddValidators(
                 assemblies != null ? ReflectionHelper.AutoDiscoverValidatorTypes(assemblies) : null,
@@ -74,7 +74,7 @@ namespace FluentValidation.IoC
             return services;
         }
 
-        public static IServiceCollection AddValidators(this IServiceCollection services, IEnumerable<Type> validatorTypes, ServiceLifetime lifetime = ServiceLifetime.Singleton, bool mapInterfaces = true)
+        public static IServiceCollection AddValidators(this IServiceCollection services, IEnumerable<Type> validatorTypes, ServiceLifetime lifetime = ServiceLifetime.Transient, bool mapInterfaces = true)
         {
             services.Scan(x =>
                 x.FromApplicationDependencies()
