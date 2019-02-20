@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
+using FluentValidation.Internal;
 
 namespace FluentValidation.IoC
 {
@@ -11,29 +12,54 @@ namespace FluentValidation.IoC
     {
         #region ValidationContext
 
-        internal static void SetServiceProvider(this ValidationContext context, IServiceProvider serviceProvider)
+        internal static bool TryGetValidationContext(this IValidationContext sourceContext, out ValidationContext validationContext)
         {
-            context.RootContextData[Constants.ServiceProviderKeyLiteral] = serviceProvider;
+            validationContext = null;
+            if (sourceContext is ValidationContext context)
+                validationContext = context;
+            else if (sourceContext is PropertyValidatorContext propertyValidatorContext)
+                validationContext = propertyValidatorContext.ParentContext;
+            else if (sourceContext is MessageBuilderContext messageBuilderContext)
+                validationContext = messageBuilderContext.ParentContext;
+            else if (sourceContext is CustomContext customContext)
+                validationContext = customContext.ParentContext;
+
+            return validationContext != null;
         }
 
-        public static IServiceProvider GetServiceProvider(this ValidationContext context)
+        internal static ValidationContext GetValidationContext(this IValidationContext sourceContext)
         {
-            var serviceProvider = (IServiceProvider)context.RootContextData[Constants.ServiceProviderKeyLiteral]
-                    ?? ServiceLocator.GetServiceProvider();
+            if (TryGetValidationContext(sourceContext, out var validationContext))
+                return validationContext;
+
+            throw new NotSupportedException($"ValidationContext of type {sourceContext.GetType()} not supported");
+        }
+
+        public static IServiceProvider GetServiceProvider(this IValidationContext context)
+        {
+            var serviceProvider =
+                (context.GetValidationContext().RootContextData.TryGetValue(Constants.ServiceProviderKeyLiteral, out var serviceProviderObject)
+                    ? serviceProviderObject as IServiceProvider : null)
+                        ?? ServiceLocator.GetServiceProvider();
 
             if (serviceProvider == null)
-                throw new InvalidOperationException("Could not get a service provider for validation. Either use an IoCValidationContext or register a global service provider in ServiceLocator.");
+                throw new InvalidOperationException("Could not get a service provider for validation. Either use a ValidationContextProvider or register a global service provider in ServiceLocator.");
 
             return serviceProvider;
         }
 
-        public static IValidatorFactory GetValidatorFactory(this ValidationContext context)
+        internal static void SetServiceProvider(this IValidationContext context, IServiceProvider serviceProvider)
+        {
+            context.GetValidationContext().RootContextData[Constants.ServiceProviderKeyLiteral] = serviceProvider;
+        }
+
+        public static IValidatorFactory GetValidatorFactory(this IValidationContext context)
         {
             var factory = context.GetServiceProvider().GetValidatorFactory()
                 ?? ServiceLocator.GetValidatorFactory();
 
             if (factory == null)
-                throw new InvalidOperationException("Could not get a validator factory. Either use an IoCValidationContext or register a global validator factory in ServiceLocator.");
+                throw new InvalidOperationException("Could not get a validator factory. Either use a ValidationContextProvider or register a global validator factory in ServiceLocator.");
 
             return factory;
         }

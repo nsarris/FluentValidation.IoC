@@ -9,7 +9,7 @@ namespace FluentValidation.IoC
 {
     public static class LiteralContextExtensions
     {
-        public static ILiteralService GetLiteralService(this ValidationContext context)
+        public static ILiteralService GetLiteralService(this IValidationContext context)
         {
             return context.GetServiceProvider().GetRequiredService<ILiteralService>();
         }

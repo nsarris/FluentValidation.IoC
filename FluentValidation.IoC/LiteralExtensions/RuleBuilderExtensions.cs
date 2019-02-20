@@ -39,7 +39,7 @@ namespace FluentValidation.IoC
         public static IRuleBuilderOptions<T, TProperty> ResolveName<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder, Type entityType, string propertyName)
         {
             return ruleBuilder
-                .Configure(x => { x.DisplayName = new IoCPropertyNameStringSource(typeof(T), propertyName); });
+                .Configure(x => { x.DisplayName = new InjectedPropertyNameStringSource(typeof(T), propertyName); });
         }
 
         public static IRuleBuilderOptions<T, TProperty> ResolveMessage<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder, string code)
@@ -48,7 +48,7 @@ namespace FluentValidation.IoC
                 .Configure(x =>
                 {
                     x.CurrentValidator.Options.ErrorCodeSource = new Resources.StaticStringSource(code);
-                    x.CurrentValidator.Options.ErrorMessageSource = new IoCErrorMessageStringSource(code);
+                    x.CurrentValidator.Options.ErrorMessageSource = new InjectedErrorMessageStringSource(code);
                 });
         }
 
