@@ -80,7 +80,7 @@ namespace FluentValidation.IoC
 
         public static bool TryGetValue<TMember>(object instance, string memberName, out TMember value)
         {
-            value = default(TMember);
+            value = default;
 
             if (instance is null) return false;
 

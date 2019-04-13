@@ -1,5 +1,7 @@
 ﻿using FluentValidation.Results;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FluentValidation.IoC
 {
@@ -21,5 +23,8 @@ namespace FluentValidation.IoC
 
         public ValidationResult Validate(T instance) 
             => BuildContext(instance).Validate();
+
+        public Task<ValidationResult> ValidateAsync(T instance, CancellationToken cancellation = default)
+            => BuildContext(instance).ValidateAsync(cancellation);
     }
 }

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using FluentValidation.Internal;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace FluentValidation.IoC
 {
@@ -74,6 +76,17 @@ namespace FluentValidation.IoC
 
         public static ValidationResult Validate<T>(this ValidationContext<T> context)
             => context.GetValidatorFactory().GetValidator<T>().Validate(context);
+
+        public static Task<ValidationResult> ValidateUsingAsync<TValidator>(this ValidationContext context, CancellationToken cancellation = default)
+            where TValidator : IValidator
+            => context.GetValidatorFactory().GetSpecificValidator<TValidator>().ValidateAsync(context, cancellation);
+
+        public static Task<ValidationResult> ValidateUsingAsync<T, TValidator>(this ValidationContext<T> context, CancellationToken cancellation = default)
+            where TValidator : IValidator<T>
+            => context.GetValidatorFactory().GetSpecificValidator<TValidator>().ValidateAsync(context, cancellation);
+
+        public static Task<ValidationResult> ValidateAsync<T>(this ValidationContext<T> context, CancellationToken cancellation = default)
+            => context.GetValidatorFactory().GetValidator<T>().ValidateAsync(context, cancellation);
 
 
         #endregion

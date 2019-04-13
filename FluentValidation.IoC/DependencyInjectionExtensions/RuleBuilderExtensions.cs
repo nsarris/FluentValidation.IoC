@@ -4,6 +4,8 @@ using FluentValidation.Results;
 using FluentValidation.Validators;
 using System;
 using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FluentValidation.IoC
 {
@@ -129,17 +131,14 @@ namespace FluentValidation.IoC
 
         #endregion
 
-        #region Must and Custom - Inject service provider and implement custom logic
+        #region Must and Custom Async - Inject service provider and implement custom logic
 
         public static IRuleBuilderOptions<T, TChild> Must<T, TChild>(
             this IRuleBuilder<T, TChild> ruleBuilder, 
             Func<T, TChild, IServiceProvider, bool> validatorFunction)
         {
             return ruleBuilder
-                .Must((parent, child, context) =>
-                {
-                    return validatorFunction(parent, child, context.GetServiceProvider());
-                });
+                .Must((parent, child, context) => validatorFunction(parent, child, context.GetServiceProvider()));
         }
 
         public static IRuleBuilderOptions<T, TChild> Must<T, TChild>(
@@ -147,10 +146,7 @@ namespace FluentValidation.IoC
             Func<T, TChild, IServiceProvider, PropertyValidatorContext, bool> validatorFunction)
         {
             return ruleBuilder
-                .Must((parent, child, context) =>
-                {
-                    return validatorFunction(parent, child, context.GetServiceProvider(), context);
-                });
+                .Must((parent, child, context) => validatorFunction(parent, child, context.GetServiceProvider(), context));
         }
 
         public static IRuleBuilderInitial<T, TChild> Custom<T, TChild>(
@@ -175,6 +171,92 @@ namespace FluentValidation.IoC
                 {
                     var parent = (T)context.ParentContext.InstanceToValidate;
                     validatorAction(parent, x, context.GetServiceProvider(), context);
+                });
+        }
+
+        #endregion
+
+        #region Must and Custom Async
+
+        public static IRuleBuilderOptions<T, TChild> MustAsync<T, TChild>(
+            this IRuleBuilder<T, TChild> ruleBuilder,
+            Func<T, TChild, IServiceProvider, CancellationToken, Task<bool>> validatorFunction)
+        {
+            return ruleBuilder
+                .MustAsync((parent, child, context, cancellation) => validatorFunction(parent, child, context.GetServiceProvider(), cancellation));
+        }
+
+        public static IRuleBuilderOptions<T, TChild> MustAsync<T, TChild>(
+            this IRuleBuilder<T, TChild> ruleBuilder,
+            Func<T, TChild, IServiceProvider, Task<bool>> validatorFunction)
+        {
+            return ruleBuilder
+                .MustAsync((parent, child, context, cancellation) => validatorFunction(parent, child, context.GetServiceProvider()));
+        }
+
+        public static IRuleBuilderOptions<T, TChild> MustAsync<T, TChild>(
+            this IRuleBuilder<T, TChild> ruleBuilder,
+            Func<T, TChild, IServiceProvider, PropertyValidatorContext, CancellationToken, Task<bool>> validatorFunction)
+        {
+            return ruleBuilder
+                .MustAsync((parent, child, context, cancellation) => validatorFunction(parent, child, context.GetServiceProvider(), context, cancellation));
+        }
+
+        public static IRuleBuilderOptions<T, TChild> MustAsync<T, TChild>(
+            this IRuleBuilder<T, TChild> ruleBuilder,
+            Func<T, TChild, IServiceProvider, PropertyValidatorContext, Task<bool>> validatorFunction)
+        {
+            return ruleBuilder
+                .MustAsync((parent, child, context, cancellation) => validatorFunction(parent, child, context.GetServiceProvider(), context));
+        }
+
+        public static IRuleBuilderInitial<T, TChild> CustomAsync<T, TChild>(
+            this IRuleBuilder<T, TChild> ruleBuilder,
+            Func<T, TChild, IServiceProvider, CancellationToken, Task<ValidationResult>> validatorFunction)
+        {
+            return ruleBuilder
+                .CustomAsync(async (x, context, cancellation) =>
+                {
+                    var resolver = context.GetServiceProvider();
+                    var parent = (T)context.ParentContext.InstanceToValidate;
+                    context.Append(await validatorFunction(parent, x, resolver, cancellation));
+                });
+        }
+
+        public static IRuleBuilderInitial<T, TChild> CustomAsync<T, TChild>(
+            this IRuleBuilder<T, TChild> ruleBuilder,
+            Func<T, TChild, IServiceProvider, Task<ValidationResult>> validatorFunction)
+        {
+            return ruleBuilder
+                .CustomAsync(async (x, context, cancellation) =>
+                {
+                    var resolver = context.GetServiceProvider();
+                    var parent = (T)context.ParentContext.InstanceToValidate;
+                    context.Append(await validatorFunction(parent, x, resolver));
+                });
+        }
+
+        public static IRuleBuilderInitial<T, TChild> CustomAsync<T, TChild>(
+            this IRuleBuilder<T, TChild> ruleBuilder,
+            Func<T, TChild, IServiceProvider, CustomContext, CancellationToken, Task> validatorAction)
+        {
+            return ruleBuilder
+                .CustomAsync(async (x, context, cancellation) =>
+                {
+                    var parent = (T)context.ParentContext.InstanceToValidate;
+                    await validatorAction(parent, x, context.GetServiceProvider(), context, cancellation);
+                });
+        }
+
+        public static IRuleBuilderInitial<T, TChild> CustomAsync<T, TChild>(
+            this IRuleBuilder<T, TChild> ruleBuilder,
+            Func<T, TChild, IServiceProvider, CustomContext, Task> validatorAction)
+        {
+            return ruleBuilder
+                .CustomAsync(async (x, context, cancellation) =>
+                {
+                    var parent = (T)context.ParentContext.InstanceToValidate;
+                    await validatorAction(parent, x, context.GetServiceProvider(), context);
                 });
         }
 

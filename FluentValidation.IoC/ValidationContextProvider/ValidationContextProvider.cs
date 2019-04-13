@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FluentValidation.IoC
 {
@@ -90,6 +92,20 @@ namespace FluentValidation.IoC
         public ValidationResult ValidateUsing<TValidator>(ValidationContext context)
             where TValidator : IValidator
             => SetupContext(context, ServiceProvider).ValidateUsing<TValidator>();
+
+        public Task<ValidationResult> ValidateAsync<T>(T instance, CancellationToken cancellation = default)
+            => BuildContext(instance, ServiceProvider).ValidateAsync(cancellation);
+
+        public Task<ValidationResult> ValidateAsync<T>(ValidationContext<T> context, CancellationToken cancellation = default)
+            => SetupContext(context, ServiceProvider).ValidateAsync(cancellation);
+
+        public Task<ValidationResult> ValidateUsingAsync<TValidator>(object instance, CancellationToken cancellation = default)
+            where TValidator : IValidator
+            => BuildContext(instance, ServiceProvider).ValidateUsingAsync<TValidator>(cancellation);
+
+        public Task<ValidationResult> ValidateUsingAsync<TValidator>(ValidationContext context, CancellationToken cancellation = default)
+            where TValidator : IValidator
+            => SetupContext(context, ServiceProvider).ValidateUsingAsync<TValidator>(cancellation);
 
         #endregion
 
