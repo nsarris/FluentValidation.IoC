@@ -5,7 +5,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <# 
-	var numOfGenericParameters = 13; 
+	var numOfGenericParameters = 12; 
 	var dependencyGenericName = "TDependency";
 	var dependencyParameterName = "dependency";
 #>
@@ -14,6 +14,8 @@ using System.Linq;
 using FluentValidation;
 using FluentValidation.Results;
 using FluentValidation.Validators;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace FluentValidation.IoC
 {
@@ -67,6 +69,85 @@ namespace FluentValidation.IoC
                     context.Append(validatorFunction(parent, x, <#= dependencies #>));
                 });
         }
+
+		public IRuleBuilderOptions<T, TChild> CustomAsync(Func<T, TChild, <#= generics #>, Task<bool>> validatorFunction)
+        {
+            return ruleBuilder
+                .MustAsync((parent, child, cancellation, context) =>
+                {
+<# foreach (var j in Enumerable.Range(1, i)) { #>
+					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
+<# } #>
+                    return validatorFunction(parent, child, <#= dependencies #>);
+                });
+        }
+
+        public IRuleBuilderInitial<T, TChild> CustomAsync(Func<T, TChild, <#= generics #>, CustomContext, Task> validationAction)
+        {
+            return ruleBuilder
+                .CustomAsync((x, context, cancellation) =>
+                {
+<# foreach (var j in Enumerable.Range(1, i)) { #>
+					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
+<# } #>
+                    var parent = (T)context.ParentContext.InstanceToValidate;
+                    return validationAction(parent, x, <#= dependencies #>, context);
+                });
+        }
+
+        public IRuleBuilderInitial<T, TChild> CustomAsync(Func<T, TChild, <#= generics #>, Task<ValidationResult>> validatorFunction)
+        {
+            return ruleBuilder
+                .CustomAsync(async (x, context, cancellation) =>
+                {
+<# foreach (var j in Enumerable.Range(1, i)) { #>
+					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
+<# } #>
+                    var parent = (T)context.ParentContext.InstanceToValidate;
+					var result = await validatorFunction(parent, x, <#= dependencies #>);
+                    context.Append(result);
+                });
+        }
+
+		public IRuleBuilderOptions<T, TChild> CustomAsync(Func<T, TChild, <#= generics #>, CancellationToken, Task<bool>> validatorFunction)
+        {
+            return ruleBuilder
+                .MustAsync((parent, child, context, cancellation) =>
+                {
+<# foreach (var j in Enumerable.Range(1, i)) { #>
+					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
+<# } #>
+                    return validatorFunction(parent, child, <#= dependencies #>, cancellation);
+                });
+        }
+
+        public IRuleBuilderInitial<T, TChild> CustomAsync(Func<T, TChild, <#= generics #>, CustomContext, CancellationToken, Task> validationAction)
+        {
+            return ruleBuilder
+                .CustomAsync((x, context, cancellation) =>
+                {
+<# foreach (var j in Enumerable.Range(1, i)) { #>
+					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
+<# } #>
+                    var parent = (T)context.ParentContext.InstanceToValidate;
+                    return validationAction(parent, x, <#= dependencies #>, context, cancellation);
+                });
+        }
+
+        public IRuleBuilderInitial<T, TChild> CustomAsync(Func<T, TChild, <#= generics #>, CancellationToken, Task<ValidationResult>> validatorFunction)
+        {
+            return ruleBuilder
+                .CustomAsync(async (x, context, cancellation) =>
+                {
+<# foreach (var j in Enumerable.Range(1, i)) { #>
+					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
+<# } #>
+                    var parent = (T)context.ParentContext.InstanceToValidate;
+					var result = await validatorFunction(parent, x, <#= dependencies #>, cancellation);
+                    context.Append(result);
+                });
+        }
+
 <# if (i < numOfGenericParameters) { #>
         public RuleBuilderDependencyContext<T, TChild, <#= generics #>, <#= nextGeneric #>> Inject<<#= nextGeneric #>>()
         {
