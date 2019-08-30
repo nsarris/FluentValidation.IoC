@@ -11,61 +11,28 @@ namespace FluentValidation.IoC
 {
     public static partial class RuleBuilderExtensions
     {
-        #region ExecuteChild  
+        #region ResolveValidator - Resolve Validator from TProperty
 
-        internal static ValidationResult ExecuteChild<TChild>(this CustomContext context, TChild instance, IValidator<TChild> childValidator)
-        {
-            var childContext =
-                context.ParentContext.IsChildCollectionContext ?
-                context.ParentContext.CloneForChildCollectionValidator(instance, true) :
-                context.ParentContext.CloneForChildValidator(instance, true, context.ParentContext.Selector);
-
-            return childValidator.Validate(childContext);
-        }
-
-        internal static ValidationResult ExecuteChild<TChild>(this CustomContext context, TChild instance, Type validatorType)
-        {
-            var childValidator = context.ResolveValidator<TChild>(validatorType);
-            return ExecuteChild(context, instance, childValidator);
-        }
-
-        #endregion
-
-        #region ResolveValidator - Resolve Validator from TChild
-
-        public static IRuleBuilderInitial<T, TChild> InjectValidator<T, TChild>(this IRuleBuilder<T, TChild> ruleBuilder)
-        {
-            return ruleBuilder
-                .Custom((x, context) =>
-                {
-                    if (x != null)
-                    {
-                        var validator = context.ResolveValidator<TChild>();
-                        context.Append(ExecuteChild(context, x, validator));
-                    }
-                });
-        }
-
-        public static IRuleBuilderOptions<T, TChild> InjectValidator<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder, 
-            Func<T, TChild, IValidator<TChild>, bool> validatorFunction)
+        public static IRuleBuilderOptions<T, TProperty> InjectValidator<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Func<T, TProperty, IValidator<TProperty>, bool> validatorFunction)
         {
             return ruleBuilder
                 .Must((parent, child, context) =>
                 {
-                    var validator = context.ResolveValidator<TChild>();
+                    var validator = context.ResolveValidator<TProperty>();
                     return validatorFunction(parent, child, validator);
                 });
         }
 
-        public static IRuleBuilderInitial<T, TChild> InjectValidator<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder, 
-            Func<T, TChild, IValidator<TChild>, ValidationResult> validatorFunction)
+        public static IRuleBuilderInitial<T, TProperty> InjectValidator<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Func<T, TProperty, IValidator<TProperty>, ValidationResult> validatorFunction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
                 {
-                    var validator = context.ResolveValidator<TChild>();
+                    var validator = context.ResolveValidator<TProperty>();
                     var parent = (T)context.ParentContext.InstanceToValidate;
                     context.Append(validatorFunction(parent, x, validator));
                 });
@@ -75,55 +42,46 @@ namespace FluentValidation.IoC
 
         #region ResolveValidator - Resolve a specific Validator
 
-        private static void AssertValidatorType<TChild>(Type validatorType)
+        private static void AssertValidatorType<TProperty>(Type validatorType)
         {
-            if (!typeof(IValidator<TChild>).IsAssignableFrom(validatorType))
-                throw new InvalidOperationException($"Type {validatorType.Name} does not implement IValidator<{typeof(TChild).Name}>");
+            if (!typeof(IValidator<TProperty>).IsAssignableFrom(validatorType))
+                throw new InvalidOperationException($"Type {validatorType.Name} does not implement IValidator<{typeof(TProperty).Name}>");
         }
 
-        public static IRuleBuilderInitial<T, TChild> InjectValidator<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder, 
-            Type validatorType)
+        public static IRuleBuilder<T, TProperty> InjectValidator<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Type validatorType,
+            params string[] ruleSets)
         {
-            AssertValidatorType<TChild>(validatorType);
-
-            return ruleBuilder
-                .Custom((x, context) =>
-                {
-                    if (x != null)
-                    {
-                        var validator = context.ResolveValidator<TChild>(validatorType);
-                        context.Append(ExecuteChild(context, x, validator));
-                    }
-                });
+            return ruleBuilder.InjectValidator((sp, ctx) => (IValidator<TProperty>)sp.GetValidatorProvider().GetSpecificValidator(validatorType), ruleSets);
         }
 
-        public static IRuleBuilderOptions<T, TChild> InjectValidator<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder,
-            Type validatorType, 
-            Func<T, TChild, IValidator<TChild>, bool> validatorFunction)
+        public static IRuleBuilderOptions<T, TProperty> InjectValidator<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Type validatorType,
+            Func<T, TProperty, IValidator<TProperty>, bool> validatorFunction)
         {
-            AssertValidatorType<TChild>(validatorType);
+            AssertValidatorType<TProperty>(validatorType);
 
             return ruleBuilder
                 .Must((parent, child, context) =>
                 {
-                    var validator = context.ResolveValidator<TChild>(validatorType);
+                    var validator = context.ResolveValidator<TProperty>(validatorType);
                     return validatorFunction(parent, child, validator);
                 });
         }
 
-        public static IRuleBuilderInitial<T, TChild> InjectValidator<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder,
+        public static IRuleBuilderInitial<T, TProperty> InjectValidator<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
             Type validatorType,
-            Func<T, TChild, IValidator<TChild>, ValidationResult> validatorFunction)
+            Func<T, TProperty, IValidator<TProperty>, ValidationResult> validatorFunction)
         {
-            AssertValidatorType<TChild>(validatorType);
+            AssertValidatorType<TProperty>(validatorType);
 
             return ruleBuilder
                 .Custom((x, context) =>
                 {
-                    var validator = context.ResolveValidator<TChild>(validatorType);
+                    var validator = context.ResolveValidator<TProperty>(validatorType);
                     var parent = (T)context.ParentContext.InstanceToValidate;
                     context.Append(validatorFunction(parent, x, validator));
                 });
@@ -133,25 +91,25 @@ namespace FluentValidation.IoC
 
         #region Must and Custom Async - Inject service provider and implement custom logic
 
-        public static IRuleBuilderOptions<T, TChild> Must<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder, 
-            Func<T, TChild, IServiceProvider, bool> validatorFunction)
+        public static IRuleBuilderOptions<T, TProperty> Must<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Func<T, TProperty, IServiceProvider, bool> validatorFunction)
         {
             return ruleBuilder
                 .Must((parent, child, context) => validatorFunction(parent, child, context.GetServiceProvider()));
         }
 
-        public static IRuleBuilderOptions<T, TChild> Must<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder,
-            Func<T, TChild, IServiceProvider, PropertyValidatorContext, bool> validatorFunction)
+        public static IRuleBuilderOptions<T, TProperty> Must<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Func<T, TProperty, IServiceProvider, PropertyValidatorContext, bool> validatorFunction)
         {
             return ruleBuilder
                 .Must((parent, child, context) => validatorFunction(parent, child, context.GetServiceProvider(), context));
         }
 
-        public static IRuleBuilderInitial<T, TChild> Custom<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder, 
-            Func<T, TChild, IServiceProvider, ValidationResult> validatorFunction)
+        public static IRuleBuilderInitial<T, TProperty> Custom<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Func<T, TProperty, IServiceProvider, ValidationResult> validatorFunction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -162,9 +120,9 @@ namespace FluentValidation.IoC
                 });
         }
 
-        public static IRuleBuilderInitial<T, TChild> Custom<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder, 
-            Action<T, TChild, IServiceProvider, CustomContext> validatorAction)
+        public static IRuleBuilderInitial<T, TProperty> Custom<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Action<T, TProperty, IServiceProvider, CustomContext> validatorAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -178,41 +136,41 @@ namespace FluentValidation.IoC
 
         #region Must and Custom Async
 
-        public static IRuleBuilderOptions<T, TChild> MustAsync<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder,
-            Func<T, TChild, IServiceProvider, CancellationToken, Task<bool>> validatorFunction)
+        public static IRuleBuilderOptions<T, TProperty> MustAsync<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Func<T, TProperty, IServiceProvider, CancellationToken, Task<bool>> validatorFunction)
         {
             return ruleBuilder
                 .MustAsync((parent, child, context, cancellation) => validatorFunction(parent, child, context.GetServiceProvider(), cancellation));
         }
 
-        public static IRuleBuilderOptions<T, TChild> MustAsync<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder,
-            Func<T, TChild, IServiceProvider, Task<bool>> validatorFunction)
+        public static IRuleBuilderOptions<T, TProperty> MustAsync<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Func<T, TProperty, IServiceProvider, Task<bool>> validatorFunction)
         {
             return ruleBuilder
                 .MustAsync((parent, child, context, cancellation) => validatorFunction(parent, child, context.GetServiceProvider()));
         }
 
-        public static IRuleBuilderOptions<T, TChild> MustAsync<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder,
-            Func<T, TChild, IServiceProvider, PropertyValidatorContext, CancellationToken, Task<bool>> validatorFunction)
+        public static IRuleBuilderOptions<T, TProperty> MustAsync<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Func<T, TProperty, IServiceProvider, PropertyValidatorContext, CancellationToken, Task<bool>> validatorFunction)
         {
             return ruleBuilder
                 .MustAsync((parent, child, context, cancellation) => validatorFunction(parent, child, context.GetServiceProvider(), context, cancellation));
         }
 
-        public static IRuleBuilderOptions<T, TChild> MustAsync<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder,
-            Func<T, TChild, IServiceProvider, PropertyValidatorContext, Task<bool>> validatorFunction)
+        public static IRuleBuilderOptions<T, TProperty> MustAsync<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Func<T, TProperty, IServiceProvider, PropertyValidatorContext, Task<bool>> validatorFunction)
         {
             return ruleBuilder
                 .MustAsync((parent, child, context, cancellation) => validatorFunction(parent, child, context.GetServiceProvider(), context));
         }
 
-        public static IRuleBuilderInitial<T, TChild> CustomAsync<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder,
-            Func<T, TChild, IServiceProvider, CancellationToken, Task<ValidationResult>> validatorFunction)
+        public static IRuleBuilderInitial<T, TProperty> CustomAsync<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Func<T, TProperty, IServiceProvider, CancellationToken, Task<ValidationResult>> validatorFunction)
         {
             return ruleBuilder
                 .CustomAsync(async (x, context, cancellation) =>
@@ -223,9 +181,9 @@ namespace FluentValidation.IoC
                 });
         }
 
-        public static IRuleBuilderInitial<T, TChild> CustomAsync<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder,
-            Func<T, TChild, IServiceProvider, Task<ValidationResult>> validatorFunction)
+        public static IRuleBuilderInitial<T, TProperty> CustomAsync<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Func<T, TProperty, IServiceProvider, Task<ValidationResult>> validatorFunction)
         {
             return ruleBuilder
                 .CustomAsync(async (x, context, cancellation) =>
@@ -236,9 +194,9 @@ namespace FluentValidation.IoC
                 });
         }
 
-        public static IRuleBuilderInitial<T, TChild> CustomAsync<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder,
-            Func<T, TChild, IServiceProvider, CustomContext, CancellationToken, Task> validatorAction)
+        public static IRuleBuilderInitial<T, TProperty> CustomAsync<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Func<T, TProperty, IServiceProvider, CustomContext, CancellationToken, Task> validatorAction)
         {
             return ruleBuilder
                 .CustomAsync(async (x, context, cancellation) =>
@@ -248,9 +206,9 @@ namespace FluentValidation.IoC
                 });
         }
 
-        public static IRuleBuilderInitial<T, TChild> CustomAsync<T, TChild>(
-            this IRuleBuilder<T, TChild> ruleBuilder,
-            Func<T, TChild, IServiceProvider, CustomContext, Task> validatorAction)
+        public static IRuleBuilderInitial<T, TProperty> CustomAsync<T, TProperty>(
+            this IRuleBuilder<T, TProperty> ruleBuilder,
+            Func<T, TProperty, IServiceProvider, CustomContext, Task> validatorAction)
         {
             return ruleBuilder
                 .CustomAsync(async (x, context, cancellation) =>
@@ -262,20 +220,11 @@ namespace FluentValidation.IoC
 
         #endregion
 
-        #region Public API
+        #region WithDependencies Builder
 
         public static ResolverRuleBuilder<T, TProperty> WithDependencies<T, TProperty>(this IRuleBuilder<T, TProperty> ruleBuilder)
         {
             return new ResolverRuleBuilder<T, TProperty>(ruleBuilder);
-        }
-
-        #endregion
-
-        #region Helpers
-
-        internal static RuleBuilder<T,TProperty> GetRuleBuilder<T, TProperty>(this IRuleBuilder<T,TProperty> ruleBuilder)
-        {
-            return (ruleBuilder as RuleBuilder<T, TProperty>);
         }
 
         #endregion

@@ -26,16 +26,16 @@ namespace FluentValidation.IoC.Unity
 
         public static IUnityContainer RegisterDefaultValidatorFactory(this IUnityContainer container)
         {
-            container.RegisterFactory<IValidatorFactory>(c => new DefaultValidatorFactory(new UnityServiceProvider(c)));
+            container.RegisterFactory<IValidatorProvider>(c => new DefaultValidatorProvider(new UnityServiceProvider(c)));
 
             return container;
         }
 
         
         public static IUnityContainer RegisterValidatorFactory<TValidatorFactory>(this IUnityContainer container)
-            where TValidatorFactory : IValidatorFactory
+            where TValidatorFactory : IValidatorProvider
         {
-            container.RegisterType<IValidatorFactory, TValidatorFactory>();
+            container.RegisterType<IValidatorProvider, TValidatorFactory>();
 
             return container;
         }

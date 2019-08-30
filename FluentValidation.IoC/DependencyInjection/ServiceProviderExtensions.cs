@@ -7,7 +7,7 @@ namespace FluentValidation.IoC
 {
     public static class ServiceProviderExtensions
     {
-        public static IValidatorFactory GetValidatorFactory(this IServiceProvider serviceProvider)
-            => (IValidatorFactory)serviceProvider.GetRequiredService(typeof(IValidatorFactory));
+        public static IValidatorProvider GetValidatorProvider(this IServiceProvider serviceProvider)
+            => (IValidatorProvider)serviceProvider.GetRequiredService(typeof(IValidatorProvider));
     }
 }

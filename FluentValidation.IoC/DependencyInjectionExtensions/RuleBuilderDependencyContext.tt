@@ -23,16 +23,16 @@ namespace FluentValidation.IoC
 	var generics = string.Join(", ",Enumerable.Range(1, i).Select(x => dependencyGenericName + x));
 	var nextGeneric = dependencyGenericName + (i + 1);
 	var dependencies = string.Join(", ",Enumerable.Range(1, i).Select(x => dependencyParameterName + x));
-#>	public sealed class RuleBuilderDependencyContext<T, TChild, <#= generics #>>
+#>	public sealed class RuleBuilderDependencyContext<T, TProperty, <#= generics #>>
     {
-        readonly IRuleBuilder<T, TChild> ruleBuilder;
+        readonly IRuleBuilder<T, TProperty> ruleBuilder;
 
-        public RuleBuilderDependencyContext(IRuleBuilder<T, TChild> ruleBuilder)
+        public RuleBuilderDependencyContext(IRuleBuilder<T, TProperty> ruleBuilder)
         {
             this.ruleBuilder = ruleBuilder;
         }
 
-        public IRuleBuilderOptions<T, TChild> Custom(Func<T, TChild, <#= generics #>, bool> validatorFunction)
+        public IRuleBuilderOptions<T, TProperty> Custom(Func<T, TProperty, <#= generics #>, bool> validatorFunction)
         {
             return ruleBuilder
                 .Must((parent, child, context) =>
@@ -44,7 +44,7 @@ namespace FluentValidation.IoC
                 });
         }
 
-        public IRuleBuilderInitial<T, TChild> Custom(Action<T, TChild, <#= generics #>, CustomContext> validationAction)
+        public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, <#= generics #>, CustomContext> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -57,7 +57,7 @@ namespace FluentValidation.IoC
                 });
         }
 
-        public IRuleBuilderInitial<T, TChild> Custom(Func<T, TChild, <#= generics #>, ValidationResult> validatorFunction)
+        public IRuleBuilderInitial<T, TProperty> Custom(Func<T, TProperty, <#= generics #>, ValidationResult> validatorFunction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -70,7 +70,7 @@ namespace FluentValidation.IoC
                 });
         }
 
-		public IRuleBuilderOptions<T, TChild> CustomAsync(Func<T, TChild, <#= generics #>, Task<bool>> validatorFunction)
+		public IRuleBuilderOptions<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, Task<bool>> validatorFunction)
         {
             return ruleBuilder
                 .MustAsync((parent, child, cancellation, context) =>
@@ -82,7 +82,7 @@ namespace FluentValidation.IoC
                 });
         }
 
-        public IRuleBuilderInitial<T, TChild> CustomAsync(Func<T, TChild, <#= generics #>, CustomContext, Task> validationAction)
+        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, CustomContext, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
@@ -95,7 +95,7 @@ namespace FluentValidation.IoC
                 });
         }
 
-        public IRuleBuilderInitial<T, TChild> CustomAsync(Func<T, TChild, <#= generics #>, Task<ValidationResult>> validatorFunction)
+        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, Task<ValidationResult>> validatorFunction)
         {
             return ruleBuilder
                 .CustomAsync(async (x, context, cancellation) =>
@@ -109,7 +109,7 @@ namespace FluentValidation.IoC
                 });
         }
 
-		public IRuleBuilderOptions<T, TChild> CustomAsync(Func<T, TChild, <#= generics #>, CancellationToken, Task<bool>> validatorFunction)
+		public IRuleBuilderOptions<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, CancellationToken, Task<bool>> validatorFunction)
         {
             return ruleBuilder
                 .MustAsync((parent, child, context, cancellation) =>
@@ -121,7 +121,7 @@ namespace FluentValidation.IoC
                 });
         }
 
-        public IRuleBuilderInitial<T, TChild> CustomAsync(Func<T, TChild, <#= generics #>, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, CustomContext, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
@@ -134,7 +134,7 @@ namespace FluentValidation.IoC
                 });
         }
 
-        public IRuleBuilderInitial<T, TChild> CustomAsync(Func<T, TChild, <#= generics #>, CancellationToken, Task<ValidationResult>> validatorFunction)
+        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, CancellationToken, Task<ValidationResult>> validatorFunction)
         {
             return ruleBuilder
                 .CustomAsync(async (x, context, cancellation) =>
@@ -149,9 +149,9 @@ namespace FluentValidation.IoC
         }
 
 <# if (i < numOfGenericParameters) { #>
-        public RuleBuilderDependencyContext<T, TChild, <#= generics #>, <#= nextGeneric #>> Inject<<#= nextGeneric #>>()
+        public RuleBuilderDependencyContext<T, TProperty, <#= generics #>, <#= nextGeneric #>> Inject<<#= nextGeneric #>>()
         {
-            return new RuleBuilderDependencyContext<T, TChild, <#= generics #>, <#= nextGeneric #>>(ruleBuilder);
+            return new RuleBuilderDependencyContext<T, TProperty, <#= generics #>, <#= nextGeneric #>>(ruleBuilder);
         }
 <# } #>
     }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace FluentValidation.IoC
 {
-    internal static class Constants
+    public interface IValidatorProvider : FluentValidation.IValidatorFactory
     {
-        public static readonly string ServiceProviderKeyLiteral = "_FV_ServiceProvider";
+        IValidator GetSpecificValidator(Type validatorType);
     }
 }

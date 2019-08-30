@@ -60,7 +60,7 @@ namespace FluentValidation.IoC
         
         internal static ValidationContext SetupContext(ValidationContext context, IServiceProvider serviceProvider)
         {
-            context.RootContextData[Constants.ServiceProviderKeyLiteral] = serviceProvider;
+            context.SetServiceProvider(serviceProvider);
             return context;
         }
 
@@ -69,11 +69,11 @@ namespace FluentValidation.IoC
         #region Validator builders
 
         public IValidator<T> GetValidator<T>()
-            => ServiceProvider.GetValidatorFactory().GetValidator<T>();
+            => ServiceProvider.GetValidatorProvider().GetValidator<T>();
 
         public TValidator GetSpecificValidator<TValidator>()
             where TValidator : IValidator
-            => ServiceProvider.GetValidatorFactory().GetSpecificValidator<TValidator>();
+            => ServiceProvider.GetValidatorProvider().GetSpecificValidator<TValidator>();
 
         #endregion
 

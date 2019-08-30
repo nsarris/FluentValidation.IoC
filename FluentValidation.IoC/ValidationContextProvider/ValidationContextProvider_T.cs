@@ -35,7 +35,7 @@ namespace FluentValidation.IoC
 
         #region Validator builders
 
-        public TValidator GetSpecificValidator<TValidator>() => serviceProvider.GetValidatorFactory().GetSpecificValidator<TValidator>();
+        public TValidator GetSpecificValidator<TValidator>() => serviceProvider.GetValidatorProvider().GetSpecificValidator<TValidator>();
 
         #endregion
 

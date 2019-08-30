@@ -9,17 +9,17 @@ using System.Linq.Expressions;
 
 namespace FluentValidation.IoC
 {
-    public sealed class ResolverRuleBuilder<T, TChild>
+    public sealed class ResolverRuleBuilder<T, TProperty>
     {
         #region Private Fields
 
-        readonly IRuleBuilder<T, TChild> ruleBuilder;
+        readonly IRuleBuilder<T, TProperty> ruleBuilder;
         
         #endregion
 
         #region Ctor
 
-        public ResolverRuleBuilder(IRuleBuilder<T, TChild> ruleBuilder)
+        public ResolverRuleBuilder(IRuleBuilder<T, TProperty> ruleBuilder)
         {
             this.ruleBuilder = ruleBuilder;
         }
@@ -28,40 +28,31 @@ namespace FluentValidation.IoC
 
         #region Specify validator to resolve
 
-        public IRuleBuilderOptions<T, TChild> InjectValidator<TValidator>(params string[] ruleSets)
-            where TValidator : IValidator<TChild>
+        public IRuleBuilderOptions<T, TProperty> InjectValidator<TValidator>(params string[] ruleSets)
+            where TValidator : IValidator<TProperty>
         {
-            var adaptor = new ChildValidatorAdaptor(context =>
-            {
-                var actualContext = (PropertyValidatorContext)context;
-                return actualContext.ResolveValidator<TChild, TValidator>();
-            }, typeof(IValidator<TChild>))
-            {
-                RuleSets = ruleSets
-            };
-
-            return ruleBuilder.SetValidator(adaptor);
+            return ruleBuilder.InjectValidator((s, ctx) => s.GetValidatorProvider().GetSpecificValidator<TValidator>(), ruleSets);
         }
 
-        public IRuleBuilderOptions<T, TChild> InjectValidator<TValidator>(Func<T, TChild, TValidator, bool> validatorFunction)
-            where TValidator : IValidator<TChild>
+        public IRuleBuilderOptions<T, TProperty> InjectValidator<TValidator>(Func<T, TProperty, TValidator, bool> validatorFunction)
+            where TValidator : IValidator<TProperty>
         {
             return ruleBuilder
                 .Must((parent, child, context) =>
                 {
-                    var validator = context.ResolveValidator<TChild, TValidator>();
+                    var validator = context.ResolveValidator<TProperty, TValidator>();
                     return validatorFunction(parent, child, validator);
                 });
         }
 
-        public IRuleBuilderOptions<T, TChild> InjectValidator<TValidator>(Func<T, TChild, TValidator, ValidationResult> validatorFunction)
-            where TValidator : IValidator<TChild>
+        public IRuleBuilderOptions<T, TProperty> InjectValidator<TValidator>(Func<T, TProperty, TValidator, ValidationResult> validatorFunction)
+            where TValidator : IValidator<TProperty>
         {
             return
-                (IRuleBuilderOptions<T, TChild>)ruleBuilder
+                (IRuleBuilderOptions<T, TProperty>)ruleBuilder
                 .Custom((x, context) =>
                 {
-                    var validator = context.ResolveValidator<TChild, TValidator>();
+                    var validator = context.ResolveValidator<TProperty, TValidator>();
                     var parent = (T)context.ParentContext.InstanceToValidate;
                     context.Append(validatorFunction(parent, x, validator));
                 });
@@ -71,9 +62,9 @@ namespace FluentValidation.IoC
 
         #region Using Dependency
 
-        public RuleBuilderDependencyContext<T, TChild, TDependency> Inject<TDependency>()
+        public RuleBuilderDependencyContext<T, TProperty, TDependency> Inject<TDependency>()
         {
-            return new RuleBuilderDependencyContext<T, TChild, TDependency>(ruleBuilder);
+            return new RuleBuilderDependencyContext<T, TProperty, TDependency>(ruleBuilder);
         }
 
         #endregion

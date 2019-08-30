@@ -1,18 +1,21 @@
 using FluentValidation.IoC;
 using FluentValidation.IoC.Tests;
 using FluentValidation.IoC.Tests.Core;
+using FluentValidation.IoC.Tests.Model;
 using FluentValidation.Results;
+using FluentValidation.TestHelper;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
 namespace FluentValidation.IoC.Tests.Core
 {
+    [TestFixture]
     public class Tests
     {
         [Test]
         public void Test1()
         {
-            var validCustomer = Data.GetInValidCustomer();
+            var invalidCustomer = Data.GetInvalidCustomer();
 
             ValidationResult result;
             ILiteralService literalService;
@@ -20,9 +23,14 @@ namespace FluentValidation.IoC.Tests.Core
             //Normally the ValidationContextProvider would be injected in the caller's constructor
             using (var scope = Setup.ServiceProvider.CreateScope())
             {
-                var validationContext = scope.ServiceProvider.GetService<ValidationContextProvider>();
-                result = validationContext.Validate(validCustomer);
-                literalService = (ILiteralService)validationContext.ServiceProvider.GetService(typeof(ILiteralService));
+                var validationContextProvider = Setup.ServiceProvider.GetRequiredService<ValidationContextProvider>();
+
+
+                validationContextProvider.ShouldHaveValidationErrorFor(c => c.VatNumber, invalidCustomer)
+                    .WithErrorCode("VatValidationServiceFailure");
+
+                result = validationContextProvider.Validate(invalidCustomer);
+                literalService = (ILiteralService)validationContextProvider.ServiceProvider.GetService(typeof(ILiteralService));
             }
 
             Assert.IsTrue(result.Errors.Count == 4);

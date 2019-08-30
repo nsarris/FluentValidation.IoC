@@ -19,7 +19,7 @@ namespace FluentValidation.IoC
             => ValidationContextProvider.BuildContext(instance, serviceProvider);
 
         public TValidator GetValidator() 
-            => serviceProvider.GetValidatorFactory().GetSpecificValidator<TValidator>();
+            => serviceProvider.GetValidatorProvider().GetSpecificValidator<TValidator>();
 
         public ValidationResult Validate(T instance) 
             => BuildContext(instance).Validate();

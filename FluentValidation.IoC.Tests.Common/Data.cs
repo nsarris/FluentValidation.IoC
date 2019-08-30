@@ -7,7 +7,7 @@ namespace FluentValidation.IoC.Tests
 {
     public static class Data
     {
-        public static Customer GetInValidCustomer()
+        public static Customer GetInvalidCustomer()
         {
             return new Customer()
             {

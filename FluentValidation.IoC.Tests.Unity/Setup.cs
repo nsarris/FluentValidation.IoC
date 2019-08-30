@@ -12,10 +12,11 @@ namespace FluentValidation.IoC.Tests
     [SetUpFixture]
     public class Setup
     {
-        public static IUnityContainer Container { get; private set; }
+        public static Lazy<IUnityContainer> container = new Lazy<IUnityContainer>(() => BuildContainer());
 
-        [OneTimeSetUp]
-        public void SetUp()
+        public static IUnityContainer Container => container.Value;
+
+        public static IUnityContainer BuildContainer()
         {
             var container = new UnityContainer();
 
@@ -46,7 +47,13 @@ namespace FluentValidation.IoC.Tests
                 .RegisterType<IVatService, MockVatService>()
                 .RegisterType<IPhoneBookService, MockPhoneBookService>();
 
-            Container = container;
+            return container;
+        }
+
+        [OneTimeSetUp]
+        public void SetUp()
+        {
+            //Container = BuildContainer();
         }
     }
 }

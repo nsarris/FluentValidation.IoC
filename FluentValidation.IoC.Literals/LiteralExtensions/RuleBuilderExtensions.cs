@@ -55,6 +55,7 @@ namespace FluentValidation.IoC
         public static IRuleBuilderOptions<T, TProperty> ResolveMessage<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder)
         {
             var errorCodeSource = ruleBuilder.GetRuleBuilder()?.Rule?.CurrentValidator?.Options?.ErrorCodeSource;
+
             if (!PropertyAccessor.TryGetValue<string>(errorCodeSource, "_message", out var code)
                 || string.IsNullOrEmpty(code))
                 throw new InvalidOperationException("Could not get code from validator. Please call WithErrorCode prior to ResolveMessage. Custom sources are not supported.");

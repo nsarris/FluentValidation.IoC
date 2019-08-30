@@ -6,11 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="fluentvalidation" Version="8.2.3" />
+    <PackageReference Include="fluentvalidation" Version="8.4.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FluentValidation.IoC.Literals\FluentValidation.IoC.Literals.csproj" />
     <ProjectReference Include="..\FluentValidation.IoC\FluentValidation.IoC.csproj" />
   </ItemGroup>
 

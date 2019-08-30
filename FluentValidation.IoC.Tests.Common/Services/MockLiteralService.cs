@@ -26,7 +26,8 @@ namespace FluentValidation.IoC.Tests.Services
         {
             if (code == "VatValidationServiceFailure")
             {
-                return $"VAT Service failed to validate VAT number '{messageValues?["PropertyValue"] ?? "{PropertyValue}"}' for customer";
+                var value = messageValues != null && messageValues.TryGetValue("PropertyValue", out var tmp) ? tmp : "{PropertyValue}";
+                return $"VAT Service failed to validate VAT number '{value}' for customer";
             }
 
             return code;

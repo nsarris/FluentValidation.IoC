@@ -68,7 +68,7 @@ namespace FluentValidation.IoC
             var duplicateValidatorTypes = validatorTypes.Where(x => x.Validators.Count > 1 && !x.DefaultValidators.Any()).ToList();
 
             if (duplicateValidatorTypes.Any())
-                throw new InvalidOperationException("Duplicate validators found for the same validater type. Please use the DefaultValidationAttribute to select the default validator. The following violations where found: "
+                throw new InvalidOperationException("Duplicate validators found for the same validator type. Please use the DefaultValidationAttribute to select the default validator. The following violations where found: "
                     + Environment.NewLine +
                     string.Join(Environment.NewLine,
                         duplicateValidatorTypes

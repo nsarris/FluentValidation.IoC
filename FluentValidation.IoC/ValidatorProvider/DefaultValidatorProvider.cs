@@ -5,11 +5,11 @@ using System.Text;
 
 namespace FluentValidation.IoC
 {
-    public class DefaultValidatorFactory : IValidatorFactory
+    internal class DefaultValidatorProvider : IValidatorProvider
     {
         private readonly IServiceProvider serviceProvider;
 
-        public DefaultValidatorFactory(IServiceProvider serviceProvider)
+        public DefaultValidatorProvider(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
         }
@@ -30,11 +30,6 @@ namespace FluentValidation.IoC
         public IValidator GetValidator(Type type)
         {
             return GetValidatorInternal(typeof(IValidator<>).MakeGenericType(type), false);
-        }
-
-        public TValidator GetSpecificValidator<TValidator>()
-        {
-            return (TValidator)GetValidatorInternal(typeof(TValidator), true);
         }
 
         public IValidator GetSpecificValidator(Type validatorType)
