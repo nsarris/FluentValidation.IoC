@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 
 namespace FluentValidation.IoC
 {
-    public sealed class ValidationContextProvider<T, TValidator>
-        where TValidator : IValidator<T>
+    internal sealed class ValidationContextProvider<T, TValidator> : IValidationContextProvider<T, TValidator> where TValidator : IValidator<T>
     {
         private readonly IServiceProvider serviceProvider;
 
@@ -16,12 +15,12 @@ namespace FluentValidation.IoC
         }
 
         public ValidationContext<T> BuildContext(T instance)
-            => ValidationContextProvider.BuildContext(instance, serviceProvider);
+            => new ValidationContext<T>(instance).WithServiceProvider(serviceProvider);
 
-        public TValidator GetValidator() 
+        public TValidator GetValidator()
             => serviceProvider.GetValidatorProvider().GetSpecificValidator<TValidator>();
 
-        public ValidationResult Validate(T instance) 
+        public ValidationResult Validate(T instance)
             => BuildContext(instance).Validate();
 
         public Task<ValidationResult> ValidateAsync(T instance, CancellationToken cancellation = default)

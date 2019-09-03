@@ -9,7 +9,7 @@ namespace FluentValidation.IoC.Tests
 {
     public static class TestExtensions
     {
-        public static IEnumerable<ValidationFailure> ShouldHaveValidationErrorFor<T, TProperty>(this ValidationContextProvider validationContextProvider, Expression<Func<T, TProperty>> memberAccessor, T value)
+        public static IEnumerable<ValidationFailure> ShouldHaveValidationErrorFor<T, TProperty>(this IValidationContextProvider validationContextProvider, Expression<Func<T, TProperty>> memberAccessor, T value)
         {
             string propertyName = ValidatorOptions.PropertyNameResolver(typeof(T), memberAccessor.GetMember(), memberAccessor);
             var result = validationContextProvider.Validate(value);

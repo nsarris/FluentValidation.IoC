@@ -23,9 +23,8 @@ namespace FluentValidation.IoC.Tests.Core
             //Normally the ValidationContextProvider would be injected in the caller's constructor
             using (var scope = Setup.ServiceProvider.CreateScope())
             {
-                var validationContextProvider = Setup.ServiceProvider.GetRequiredService<ValidationContextProvider>();
-
-
+                var validationContextProvider = Setup.ServiceProvider.GetRequiredService<IValidationContextProvider>();
+                
                 validationContextProvider.ShouldHaveValidationErrorFor(c => c.VatNumber, invalidCustomer)
                     .WithErrorCode("VatValidationServiceFailure");
 

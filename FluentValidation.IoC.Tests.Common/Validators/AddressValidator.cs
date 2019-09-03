@@ -28,9 +28,9 @@ namespace FluentValidation.IoC.Tests.Validators
     
     public class MainAddressValidator : AbstractValidator<Address>
     {
-        public MainAddressValidator(IValidatorProvider validatorFactory)
+        public MainAddressValidator(IValidatorProvider validatorProvider)
         {
-            Include(x => validatorFactory.GetValidator<Address>());
+            Include(x => validatorProvider.GetValidator<Address>());
             RuleFor(x => x.PostCode).NotEmpty();
         }
     }

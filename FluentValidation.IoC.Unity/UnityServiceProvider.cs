@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Linq;
 using Unity;
+using Unity.Extension;
+using Unity.Lifetime;
 
 namespace FluentValidation.IoC.Unity
 {
-    public sealed class UnityServiceProvider : IServiceProvider, IDisposable
+    internal sealed class UnityServiceProvider : IServiceProvider, IDisposable
     {
         public IUnityContainer Container { get; }
 

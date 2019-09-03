@@ -14,9 +14,9 @@ namespace FluentValidation.IoC
             this.serviceProvider = serviceProvider;
         }
 
-        protected virtual IValidator GetValidatorInternal(Type type, bool typeIsChecked)
+        protected virtual IValidator GetValidatorInternal(Type type, bool assertType = true)
         {
-            if (!typeIsChecked && !typeof(IValidator).IsAssignableFrom(type))
+            if (assertType && !typeof(IValidator).IsAssignableFrom(type))
                 throw new InvalidOperationException($"Type {type.Name} does not implement IValidator");
 
             return (IValidator)serviceProvider.GetRequiredService(type);
@@ -24,7 +24,7 @@ namespace FluentValidation.IoC
 
         public IValidator<T> GetValidator<T>()
         {
-            return (IValidator<T>)GetValidatorInternal(typeof(IValidator<T>), true);
+            return (IValidator<T>)GetValidatorInternal(typeof(IValidator<T>), false);
         }
 
         public IValidator GetValidator(Type type)
@@ -34,7 +34,7 @@ namespace FluentValidation.IoC
 
         public IValidator GetSpecificValidator(Type validatorType)
         {
-            return GetValidatorInternal(validatorType, true);
+            return GetValidatorInternal(validatorType);
         }
     }
 }

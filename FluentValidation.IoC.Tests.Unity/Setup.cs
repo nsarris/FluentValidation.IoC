@@ -2,10 +2,10 @@
 using FluentValidation.IoC.Tests.Model;
 using FluentValidation.IoC.Tests.Services;
 using FluentValidation.IoC.Tests.Validators;
-using FluentValidation.IoC.Unity;
 using NUnit.Framework;
 using Unity;
 using Unity.Lifetime;
+using FluentValidation.IoC.Unity;
 
 namespace FluentValidation.IoC.Tests
 {
@@ -24,13 +24,19 @@ namespace FluentValidation.IoC.Tests
             //so disposing it wont dispose the base container
             container
                 //Register container as an IServiceProvider
-                .RegisterAsServiceProvider()
+                //.RegisterAsServiceProvider()
                 //Register the ValidationContextProvider
-                .RegisterValidationContextProvider()
+                //.RegisterValidationContextProvider()
                 //Register container as a default validator factory
-                .RegisterDefaultValidatorFactory()
+                //.RegisterDefaultValidatorFactory()
                 //Register all validators in assemblies as singletons
-                .RegisterAllValidators()
+                //.RegisterAllValidators()
+                
+                .RegisterFluentValidation(configure => configure
+                    .UsingAssemblyScanner(scanner => scanner.Scan(AppDomain.CurrentDomain.GetAssemblies().FilterFramework()))
+                    //.WithDuplicateResolution(x => x.OrderBy(y => y.ImplementationType.GetCustomAttributes(false).Any(a => a.GetType() == typeof(DefaultValidatorAttribute))).First())
+                    .WithDuplicateResolutionByAttribute<DefaultValidatorAttribute>()
+                    )
 
             //Registration from specific assembly
             //  .RegisterAllValidators(new[] { this.GetType().Assembly });

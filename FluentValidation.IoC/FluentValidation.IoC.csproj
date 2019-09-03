@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="DependencyInjectionExtensions\RuleBuilderDependencyContext.tt">
+    <None Update="Extensions\RuleBuilderDependencyContext.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>RuleBuilderDependencyContext.cs</LastGenOutput>
     </None>
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="DependencyInjectionExtensions\RuleBuilderDependencyContext.cs">
+    <Compile Update="Extensions\RuleBuilderDependencyContext.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>RuleBuilderDependencyContext.tt</DependentUpon>

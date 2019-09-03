@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
@@ -20,11 +21,18 @@ namespace FluentValidation.IoC.Tests.Core
         {
             return new ServiceCollection()
                 //Register the ValidationContextProvider
-                .AddValidationContextProvider()
+                //.AddValidationContextProvider()
                 //Register container as a default validator factory
-                .AddDefaultValidatorProvider()
+                //.AddDefaultValidatorProvider()
                 //Register all validators in assemblies as singletons
-                .AddValidators()
+                //.AddValidators()
+
+                .AddFluentValidation(configure => configure
+                    .UsingAssemblyScanner(scanner => scanner.Scan(AppDomain.CurrentDomain.GetAssemblies().FilterFramework()))
+                    //.WithDuplicateResolution(x => x.OrderBy(y => y.ImplementationType.GetCustomAttributes(false).Any(a => a.GetType() == typeof(DefaultValidatorAttribute))).First())
+                    .WithDuplicateResolutionByAttribute<DefaultValidatorAttribute>()
+                    )
+
                 //Register Literal Service
                 .AddLiteralService<MockLiteralService>(ServiceLifetime.Singleton)
 
