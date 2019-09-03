@@ -5,14 +5,20 @@ using FluentValidation.IoC.Tests.Model;
 using FluentValidation.Results;
 using FluentValidation.TestHelper;
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
+using Xunit;
 
 namespace FluentValidation.IoC.Tests.Core
 {
-    [TestFixture]
-    public class Tests
+    public class Tests : IClassFixture<SetupFixture>
     {
-        [Test]
+        private readonly SetupFixture fixture;
+
+        public Tests(SetupFixture fixture)
+        {
+            this.fixture = fixture;
+        }
+
+        [Fact]
         public void Test1()
         {
             var invalidCustomer = Data.GetInvalidCustomer();
@@ -21,9 +27,9 @@ namespace FluentValidation.IoC.Tests.Core
             ILiteralService literalService;
 
             //Normally the ValidationContextProvider would be injected in the caller's constructor
-            using (var scope = Setup.ServiceProvider.CreateScope())
+            using (var scope = fixture.ServiceProvider.CreateScope())
             {
-                var validationContextProvider = Setup.ServiceProvider.GetRequiredService<IValidationContextProvider>();
+                var validationContextProvider = fixture.ServiceProvider.GetRequiredService<IValidationContextProvider>();
                 
                 validationContextProvider.ShouldHaveValidationErrorFor(c => c.VatNumber, invalidCustomer)
                     .WithErrorCode("VatValidationServiceFailure");
@@ -32,16 +38,16 @@ namespace FluentValidation.IoC.Tests.Core
                 literalService = (ILiteralService)validationContextProvider.ServiceProvider.GetService(typeof(ILiteralService));
             }
 
-            Assert.IsTrue(result.Errors.Count == 4);
+            Assert.True(result.Errors.Count == 4);
 
-            Assert.IsTrue(result.Errors[0].ErrorCode == "VatValidationServiceFailure"
+            Assert.True(result.Errors[0].ErrorCode == "VatValidationServiceFailure"
                 && result.Errors[0].ErrorMessage == literalService.GetValidationErrorMessage(result.Errors[0].ErrorCode, result.Errors[0].FormattedMessagePlaceholderValues));
 
-            Assert.IsTrue(result.Errors[1].ErrorMessage.EndsWith("is not a valid mobile phone number"));
+            Assert.EndsWith("is not a valid mobile phone number", result.Errors[1].ErrorMessage);
 
-            Assert.IsTrue(result.Errors[2].ErrorMessage.Contains("'Telephone Number'"));
+            Assert.Contains("'Telephone Number'", result.Errors[2].ErrorMessage);
 
-            Assert.IsTrue(result.Errors[3].ErrorMessage.Contains("'Post Code'"));
+            Assert.Contains("'Post Code'", result.Errors[3].ErrorMessage);
         }
     }
 }

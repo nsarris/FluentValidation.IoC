@@ -13,14 +13,24 @@ namespace FluentValidation.IoC
         {
             var configuration = new FluentValidationConfiguration(services);
             configure?.Invoke(configuration);
+            return AddFluentValidation(configuration);
+        }
 
-            services.AddTransient<IValidationContextProvider>(sp => new ValidationContextProvider(sp.GetRequiredService<IServiceProvider>()));
+        public static IServiceCollection AddFluentValidation(this IServiceCollection services)
+        {
+            return AddFluentValidation(new FluentValidationConfiguration(services));
+        }
 
-            services.Add(configuration.ValidatorProviderServiceDescriptor);
-            services.Add(new ServiceDescriptor(typeof(IValidatorProvider), sp => sp.GetRequiredService(configuration.ValidatorProviderServiceDescriptor.ServiceType), configuration.ValidatorProviderServiceDescriptor.Lifetime));
+        private static IServiceCollection AddFluentValidation(FluentValidationConfiguration configuration)
+        {
+            configuration.Services.AddTransient<IValidationContextProvider, ValidationContextProvider>();
+            configuration.Services.AddTransient(typeof(IValidationContextProvider<>), typeof(ValidationContextProvider<>));
+            configuration.Services.AddTransient(typeof(IValidationContextProvider<,>), typeof(ValidationContextProvider<,>));
+
+            configuration.Services.Add(configuration.ValidatorProviderServiceDescriptor);
+            configuration.Services.Add(new ServiceDescriptor(typeof(IValidatorProvider), sp => sp.GetRequiredService(configuration.ValidatorProviderServiceDescriptor.ServiceType), configuration.ValidatorProviderServiceDescriptor.Lifetime));
 
             var interfaceMaps = configuration.ValidatorServiceDescriptors
-                .Where(x => x.MapInterfaces)
                 .Select(x => new
                 {
                     x.ValidatorType,
@@ -50,13 +60,13 @@ namespace FluentValidation.IoC
 
             foreach (var implementationDescriptor in interfaceMaps
                    .Select(x => new ServiceDescriptor(x.ValidatorType, x.ValidatorType, x.Lifetime)))
-                services.Add(implementationDescriptor);
+                configuration.Services.Add(implementationDescriptor);
 
             foreach (var implementationDescriptor in interfaceServiceDescriptors
                    .Select(x => new ServiceDescriptor(x.ServiceType, sp => sp.GetRequiredService(x.ImplementationType), x.Lifetime)))
-                services.Add(implementationDescriptor);
+                configuration.Services.Add(implementationDescriptor);
 
-            return services;
+            return configuration.Services;
         }
     }
 }

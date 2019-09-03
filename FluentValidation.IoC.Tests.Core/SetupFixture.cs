@@ -1,6 +1,6 @@
 ﻿using FluentValidation.IoC.Tests.Services;
 using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
+using Xunit;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -8,12 +8,11 @@ using System.Text;
 
 namespace FluentValidation.IoC.Tests.Core
 {
-    [SetUpFixture]
-    public class Setup
+    public class SetupFixture
     {
-        private static Lazy<IServiceProvider> serviceProvider = new Lazy<IServiceProvider>(() => BuildServiceProvider());
+        private readonly Lazy<IServiceProvider> serviceProvider = new Lazy<IServiceProvider>(() => BuildServiceProvider());
 
-        public static IServiceProvider ServiceProvider //{ get; private set; }
+        public IServiceProvider ServiceProvider
             => serviceProvider.Value;
 
 
@@ -31,12 +30,6 @@ namespace FluentValidation.IoC.Tests.Core
                 .AddTransient<IPhoneBookService, MockPhoneBookService>()
 
             .BuildServiceProvider();
-        }
-
-        [OneTimeSetUp]
-        public void SetUp()
-        {
-            //ServiceProvider = BuildServiceProvider();
         }
     }
 }

@@ -15,7 +15,8 @@ namespace FluentValidation.IoC.Tests
                         && !x.FullName.StartsWith("Microsoft."))
                     .Where(x => !x.FullName.Contains("PublicKeyToken=b77a5c561934e089"))
                     .Where(x => !x.FullName.StartsWith("Unity.")
-                        && !x.FullName.StartsWith("nunit."))
+                        && !x.FullName.StartsWith("nunit.")
+                        && !x.FullName.StartsWith("XUnit."))
                     ;
         }
     }
