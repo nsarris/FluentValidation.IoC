@@ -20,21 +20,11 @@ namespace FluentValidation.IoC.Tests.Core
         private static IServiceProvider BuildServiceProvider()
         {
             return new ServiceCollection()
-                //Register the ValidationContextProvider
-                //.AddValidationContextProvider()
-                //Register container as a default validator factory
-                //.AddDefaultValidatorProvider()
-                //Register all validators in assemblies as singletons
-                //.AddValidators()
-
                 .AddFluentValidation(configure => configure
-                    .UsingAssemblyScanner(scanner => scanner.Scan(AppDomain.CurrentDomain.GetAssemblies().FilterFramework()))
-                    //.WithDuplicateResolution(x => x.OrderBy(y => y.ImplementationType.GetCustomAttributes(false).Any(a => a.GetType() == typeof(DefaultValidatorAttribute))).First())
+                    .UsingAssemblyScanner(scanner => scanner.Scan(TestHelper.GetLoadedUserAssemblies()))
                     .WithDuplicateResolutionByAttribute<DefaultValidatorAttribute>()
+                    .AddLiteralService<MockLiteralService>(ServiceLifetime.Singleton)
                     )
-
-                //Register Literal Service
-                .AddLiteralService<MockLiteralService>(ServiceLifetime.Singleton)
 
                 //Register business services
                 .AddTransient<IVatService, MockVatService>()

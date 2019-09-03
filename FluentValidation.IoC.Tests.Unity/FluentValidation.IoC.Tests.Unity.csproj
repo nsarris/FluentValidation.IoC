@@ -118,7 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FluentValidation.IoC.Literals\FluentValidation.IoC.Literals.csproj">
-      <Project>{4e75aed0-f3c6-4a80-a6a5-f2b4896c0197}</Project>
+      <Project>{b6a67f50-182e-4354-9eed-b2a8215472c9}</Project>
       <Name>FluentValidation.IoC.Literals</Name>
     </ProjectReference>
     <ProjectReference Include="..\FluentValidation.IoC.Tests.Common\FluentValidation.IoC.Tests.Common.csproj">

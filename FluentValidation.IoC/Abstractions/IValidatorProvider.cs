@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FluentValidation.IoC
 {
-    public interface IValidatorProvider : FluentValidation.IValidatorFactory
+    public interface IValidatorProvider : IValidatorFactory
     {
         IValidator GetSpecificValidator(Type validatorType);
     }

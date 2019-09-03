@@ -12,7 +12,7 @@ namespace FluentValidation.IoC
             Services = services;
         }
 
-        internal IServiceCollection Services { get; }
+        public IServiceCollection Services { get; }
 
         internal ServiceDescriptor ValidatorProviderServiceDescriptor { get; private set; } = new ServiceDescriptor(typeof(DefaultValidatorProvider), typeof(DefaultValidatorProvider), ServiceLifetime.Transient);
         internal List<ValidatorServiceDescriptor> ValidatorServiceDescriptors { get; } = new List<ValidatorServiceDescriptor>();
@@ -27,8 +27,6 @@ namespace FluentValidation.IoC
 
         public FluentValidationConfiguration AddValidators(IEnumerable<Type> validatorTypes, ServiceLifetime lifetime = ServiceLifetime.Transient, bool mapInterfaces = true)
         {
-            
-
             foreach (var validatorType in validatorTypes)
                 ValidatorServiceDescriptors.Add(new ValidatorServiceDescriptor(validatorType, lifetime, mapInterfaces));
 

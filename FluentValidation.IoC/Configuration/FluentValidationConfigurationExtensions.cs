@@ -6,9 +6,6 @@ namespace FluentValidation.IoC
 {
     public static class FluentValidationConfigurationExtensions
     {
-        public static FluentValidationConfiguration AddValidatorProvider(this FluentValidationConfiguration configuration, Type validatorProviderType)
-            => configuration.AddValidatorProvider(validatorProviderType, ServiceLifetime.Transient);
-
         public static FluentValidationConfiguration AddValidatorProvider<T>(this FluentValidationConfiguration configuration, ServiceLifetime lifetime)
             where T : IValidatorProvider
             => configuration.AddValidatorProvider(typeof(T), lifetime);

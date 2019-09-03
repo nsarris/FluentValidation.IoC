@@ -3,48 +3,52 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Unity;
 using Unity.Lifetime;
-using Unity.Microsoft.DependencyInjection.Lifetime;
 
-namespace Unity.Microsoft.DependencyInjection
+namespace FluentValidation.IoC.Unity
 {
-    internal static class Configuration
+    internal static class UnityContainerServiceCollectionExtensions
     {
-
-        internal static IUnityContainer AddServices(this IUnityContainer container, IServiceCollection services)
+        internal static IUnityContainer ConfigureServices(this IUnityContainer container, Action<IServiceCollection> configure)
         {
-            var lifetime = ((UnityContainer)container)
-                    .AddExtension(new MdiExtension())
-                    .Configure<MdiExtension>()
-                    .Lifetime;
+            var services = new UnityServiceCollection();
+            configure?.Invoke(services);
 
+            container.ConfigureServices(services);
+
+            return container;
+        }
+
+        internal static IUnityContainer ConfigureServices(this IUnityContainer container, IServiceCollection services)
+        {
             foreach (var group in services.GroupBy(serviceDescriptor => serviceDescriptor.ServiceType)
                                           .Select(group => group.ToArray()))
             {
                 var last = group.Last();
-                
+
                 // Register named types
                 foreach (var descriptor in group.Where(x => x != last))
                 {
-                    container.Register(descriptor, Guid.NewGuid().ToString(), lifetime);
+                    container.Register(descriptor, Guid.NewGuid().ToString());
                 }
 
                 // Register default types
-                container.Register(last, null, lifetime);
+                container.Register(last, null);
             }
 
             return container;
         }
 
-        internal static void Register(this IUnityContainer container,
-            ServiceDescriptor serviceDescriptor, string qualifier, ILifetimeContainer lifetime)
+        private static void Register(this IUnityContainer container,
+            ServiceDescriptor serviceDescriptor, string qualifier)
         {
             if (serviceDescriptor.ImplementationType != null)
             {
                 container.RegisterType(serviceDescriptor.ServiceType,
                                        serviceDescriptor.ImplementationType,
                                        qualifier,
-                                       (ITypeLifetimeManager)serviceDescriptor.GetLifetime(lifetime));
+                                       (ITypeLifetimeManager)serviceDescriptor.GetLifetime());
             }
             else if (serviceDescriptor.ImplementationFactory != null)
             {
@@ -58,14 +62,15 @@ namespace Unity.Microsoft.DependencyInjection
                                             var instance = serviceDescriptor.ImplementationFactory(serviceProvider);
                                             return instance;
                                         },
-                                       (IFactoryLifetimeManager)serviceDescriptor.GetLifetime(lifetime));
+                                       (IFactoryLifetimeManager)serviceDescriptor.GetLifetime());
             }
             else if (serviceDescriptor.ImplementationInstance != null)
             {
                 container.RegisterInstance(serviceDescriptor.ServiceType,
                                            qualifier,
                                            serviceDescriptor.ImplementationInstance,
-                                           (IInstanceLifetimeManager)serviceDescriptor.GetLifetime(lifetime));
+                                           (IInstanceLifetimeManager)serviceDescriptor.GetLifetime(true)
+                                           );
             }
             else
             {
@@ -74,48 +79,20 @@ namespace Unity.Microsoft.DependencyInjection
         }
 
 
-        internal static LifetimeManager GetLifetime(this ServiceDescriptor serviceDescriptor, ILifetimeContainer lifetime)
+        private static LifetimeManager GetLifetime(this ServiceDescriptor serviceDescriptor, bool isImplementationInstance = false)
         {
             switch (serviceDescriptor.Lifetime)
             {
                 case ServiceLifetime.Scoped:
-                    return new HierarchicalLifetimeManager();
+                    return isImplementationInstance ? (LifetimeManager)new ContainerControlledLifetimeManager() : new HierarchicalLifetimeManager();
                 case ServiceLifetime.Singleton:
-                    return new InjectionSingletonLifetimeManager(lifetime);
+                    return new SingletonLifetimeManager();
                 case ServiceLifetime.Transient:
-                    return new InjectionTransientLifetimeManager();
+                    return new ContainerControlledTransientManager();
                 default:
                     throw new NotImplementedException(
                         $"Unsupported lifetime manager type '{serviceDescriptor.Lifetime}'");
             }
-        }
-
-
-        internal static bool CanResolve(this IUnityContainer container, Type type)
-        {
-            var info = type.GetTypeInfo();
-
-            if (info.IsClass && !info.IsAbstract)
-            {
-                if (typeof(Delegate).GetTypeInfo().IsAssignableFrom(info) || typeof(string) == type || info.IsEnum
-                    || type.IsArray || info.IsPrimitive)
-                {
-                    return container.IsRegistered(type);
-                }
-                return true;
-            }
-
-            if (info.IsGenericType)
-            {
-                var gerericType = type.GetGenericTypeDefinition();
-                if ((gerericType == typeof(IEnumerable<>)) ||
-                    container.IsRegistered(gerericType))
-                {
-                    return true;
-                }
-            }
-
-            return container.IsRegistered(type);
         }
     }
 }

@@ -19,4 +19,10 @@ namespace FluentValidation.IoC.Tests
                     ;
         }
     }
+
+    public static class TestHelper
+    {
+        public static IEnumerable<Assembly> GetLoadedUserAssemblies()
+            => AppDomain.CurrentDomain.GetAssemblies().FilterFramework();
+    }
 }

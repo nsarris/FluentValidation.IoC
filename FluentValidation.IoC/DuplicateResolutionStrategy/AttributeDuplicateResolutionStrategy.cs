@@ -9,7 +9,7 @@ namespace FluentValidation.IoC
     {
         public AttributeDuplicateResolutionStrategy(Type attributeType)
         {
-            AttributeType = attributeType;
+            AttributeType = attributeType ?? throw new ArgumentNullException(nameof(attributeType));
         }
 
         public Type AttributeType { get; }

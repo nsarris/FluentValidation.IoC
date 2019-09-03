@@ -7,7 +7,7 @@ using Unity.Lifetime;
 
 namespace FluentValidation.IoC.Unity
 {
-    internal sealed class UnityServiceProvider : IServiceProvider, IDisposable
+    internal sealed class UnityServiceProvider : IServiceProvider
     {
         public IUnityContainer Container { get; }
 
@@ -16,7 +16,6 @@ namespace FluentValidation.IoC.Unity
             this.Container = unityContainer ?? throw new ArgumentNullException(nameof(unityContainer));
         }
 
-        public void Dispose() => Container?.Dispose();
         public object GetService(Type serviceType) => Container.Resolve(serviceType);
         public object GetService<T>() => Container.Resolve<T>();
     }

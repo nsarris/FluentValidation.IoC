@@ -10,10 +10,10 @@ namespace FluentValidation.IoC
 
         public FuncWrapperDuplicateResolutionStrategy(Func<IEnumerable<ServiceDescriptor>, ServiceDescriptor> duplicateResolver)
         {
-            this.resolver = duplicateResolver;
+            this.resolver = duplicateResolver ?? throw new ArgumentNullException(nameof(duplicateResolver));
         }
 
         public ServiceDescriptor Resolve(IEnumerable<ServiceDescriptor> duplicates)
-         => resolver(duplicates);
+            => resolver(duplicates);
     }
 }

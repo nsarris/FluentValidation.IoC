@@ -10,8 +10,7 @@ namespace FluentValidation.IoC
         public IEnumerable<Type> FindValidatorsInAssemblies(IEnumerable<Assembly> assemblies)
         {
             return AssemblyScanner
-                .FindValidatorsInAssemblies(assemblies
-                    .Where(x => !x.IsDynamic))
+                .FindValidatorsInAssemblies(assemblies)
                 .Select(x => x.ValidatorType)
                 .ToList();
         }
