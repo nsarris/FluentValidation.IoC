@@ -23,7 +23,8 @@ namespace FluentValidation.IoC
 	var generics = string.Join(", ",Enumerable.Range(1, i).Select(x => dependencyGenericName + x));
 	var nextGeneric = dependencyGenericName + (i + 1);
 	var dependencies = string.Join(", ",Enumerable.Range(1, i).Select(x => dependencyParameterName + x));
-#>	public sealed class RuleBuilderDependencyContext<T, TProperty, <#= generics #>>
+#>	
+	public sealed class RuleBuilderDependencyContext<T, TProperty, <#= generics #>>
     {
         readonly IRuleBuilder<T, TProperty> ruleBuilder;
 

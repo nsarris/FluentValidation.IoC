@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 
 namespace FluentValidation.IoC
 {
-    public sealed class ResolverRuleBuilder<T, TProperty>
+    public sealed class InjectionRuleBuilder<T, TProperty>
     {
         #region Private Fields
 
@@ -19,7 +19,7 @@ namespace FluentValidation.IoC
 
         #region Ctor
 
-        public ResolverRuleBuilder(IRuleBuilder<T, TProperty> ruleBuilder)
+        public InjectionRuleBuilder(IRuleBuilder<T, TProperty> ruleBuilder)
         {
             this.ruleBuilder = ruleBuilder;
         }

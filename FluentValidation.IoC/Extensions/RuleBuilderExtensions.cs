@@ -222,9 +222,9 @@ namespace FluentValidation.IoC
 
         #region WithDependencies Builder
 
-        public static ResolverRuleBuilder<T, TProperty> WithDependencies<T, TProperty>(this IRuleBuilder<T, TProperty> ruleBuilder)
+        public static InjectionRuleBuilder<T, TProperty> WithDependencies<T, TProperty>(this IRuleBuilder<T, TProperty> ruleBuilder)
         {
-            return new ResolverRuleBuilder<T, TProperty>(ruleBuilder);
+            return new InjectionRuleBuilder<T, TProperty>(ruleBuilder);
         }
 
         #endregion

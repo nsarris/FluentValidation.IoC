@@ -8,6 +8,7 @@ using System.Threading;
 
 namespace FluentValidation.IoC
 {
+	
 	public sealed class RuleBuilderDependencyContext<T, TProperty, TDependency1>
     {
         readonly IRuleBuilder<T, TProperty> ruleBuilder;
@@ -120,6 +121,7 @@ namespace FluentValidation.IoC
             return new RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2>(ruleBuilder);
         }
     }
+	
 	public sealed class RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2>
     {
         readonly IRuleBuilder<T, TProperty> ruleBuilder;
@@ -241,6 +243,7 @@ namespace FluentValidation.IoC
             return new RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3>(ruleBuilder);
         }
     }
+	
 	public sealed class RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3>
     {
         readonly IRuleBuilder<T, TProperty> ruleBuilder;
@@ -371,6 +374,7 @@ namespace FluentValidation.IoC
             return new RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4>(ruleBuilder);
         }
     }
+	
 	public sealed class RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4>
     {
         readonly IRuleBuilder<T, TProperty> ruleBuilder;
@@ -510,6 +514,7 @@ namespace FluentValidation.IoC
             return new RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5>(ruleBuilder);
         }
     }
+	
 	public sealed class RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5>
     {
         readonly IRuleBuilder<T, TProperty> ruleBuilder;
@@ -658,6 +663,7 @@ namespace FluentValidation.IoC
             return new RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6>(ruleBuilder);
         }
     }
+	
 	public sealed class RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6>
     {
         readonly IRuleBuilder<T, TProperty> ruleBuilder;
@@ -815,6 +821,7 @@ namespace FluentValidation.IoC
             return new RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7>(ruleBuilder);
         }
     }
+	
 	public sealed class RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7>
     {
         readonly IRuleBuilder<T, TProperty> ruleBuilder;
@@ -981,6 +988,7 @@ namespace FluentValidation.IoC
             return new RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8>(ruleBuilder);
         }
     }
+	
 	public sealed class RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8>
     {
         readonly IRuleBuilder<T, TProperty> ruleBuilder;
@@ -1156,6 +1164,7 @@ namespace FluentValidation.IoC
             return new RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9>(ruleBuilder);
         }
     }
+	
 	public sealed class RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9>
     {
         readonly IRuleBuilder<T, TProperty> ruleBuilder;
@@ -1340,6 +1349,7 @@ namespace FluentValidation.IoC
             return new RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10>(ruleBuilder);
         }
     }
+	
 	public sealed class RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10>
     {
         readonly IRuleBuilder<T, TProperty> ruleBuilder;
@@ -1533,6 +1543,7 @@ namespace FluentValidation.IoC
             return new RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11>(ruleBuilder);
         }
     }
+	
 	public sealed class RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11>
     {
         readonly IRuleBuilder<T, TProperty> ruleBuilder;
@@ -1735,6 +1746,7 @@ namespace FluentValidation.IoC
             return new RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12>(ruleBuilder);
         }
     }
+	
 	public sealed class RuleBuilderDependencyContext<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12>
     {
         readonly IRuleBuilder<T, TProperty> ruleBuilder;
