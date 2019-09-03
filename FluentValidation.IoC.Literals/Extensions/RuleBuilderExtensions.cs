@@ -9,7 +9,7 @@ namespace FluentValidation.IoC
 {
     public static partial class LiteralRuleBuilderExtensions
     {
-        private static (Type entityType, string propertyName) ExtractSelector<T>(Expression<Func<T, object>> selector)
+        private static (Type type, string propertyName) ExtractSelector<T>(Expression<Func<T, object>> selector)
         {
             if (selector.Body is MemberExpression memberExpression)
                 return (memberExpression.Expression.Type, memberExpression.Member.Name);
@@ -19,9 +19,7 @@ namespace FluentValidation.IoC
 
         public static IRuleBuilderOptions<T, TProperty> ResolveName<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder)
         {
-            var propertyName =
-                ruleBuilder.GetRuleBuilder()?.Rule?.GetDisplayName()
-                ?? ruleBuilder.GetRuleBuilder()?.Rule?.PropertyName;
+            var propertyName = ruleBuilder.GetRuleBuilder()?.Rule?.PropertyName;
 
             if (string.IsNullOrEmpty(propertyName))
                 return ruleBuilder;
@@ -39,7 +37,10 @@ namespace FluentValidation.IoC
         public static IRuleBuilderOptions<T, TProperty> ResolveName<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder, Type entityType, string propertyName)
         {
             return ruleBuilder
-                .Configure(x => { x.DisplayName = new InjectedPropertyNameStringSource(typeof(T), propertyName); });
+                .Configure(x => 
+                {
+                    x.DisplayName = new InjectedPropertyNameStringSource(entityType, propertyName);
+                });
         }
 
         public static IRuleBuilderOptions<T, TProperty> ResolveMessage<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder, string code)
