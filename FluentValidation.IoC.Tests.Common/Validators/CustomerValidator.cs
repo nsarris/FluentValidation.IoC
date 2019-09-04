@@ -12,7 +12,7 @@ namespace FluentValidation.IoC.Tests.Validators
             RuleFor(x => x.VatNumber)
                 .WithDependencies()
                     .Inject<IVatService>()
-                    .Custom((customer, vatNumber, vatService) =>
+                    .Must((customer, vatNumber, vatService) =>
                     {
                         return vatService.IsValid(vatNumber);
                     })

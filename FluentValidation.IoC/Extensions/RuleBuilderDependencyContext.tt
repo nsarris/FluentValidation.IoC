@@ -16,6 +16,7 @@ using FluentValidation.Results;
 using FluentValidation.Validators;
 using System.Threading.Tasks;
 using System.Threading;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentValidation.IoC
 {
@@ -33,119 +34,78 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-        public IRuleBuilderOptions<T, TProperty> Custom(Func<T, TProperty, <#= generics #>, bool> validatorFunction)
-        {
-            return ruleBuilder
-                .Must((parent, child, context) =>
-                {
-<# foreach (var j in Enumerable.Range(1, i)) { #>
-					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
-<# } #>
-                    return validatorFunction(parent, child, <#= dependencies #>);
-                });
-        }
-
-        public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, <#= generics #>, CustomContext> validationAction)
+		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, <#= generics #>, CustomContext> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
                 {
 <# foreach (var j in Enumerable.Range(1, i)) { #>
-					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
+					var dependency<#= j #> = context.GetServiceProvider().GetRequiredService<<#= dependencyGenericName + j #>>();
 <# } #>
                     var parent = (T)context.ParentContext.InstanceToValidate;
                     validationAction(parent, x, <#= dependencies #>, context);
                 });
         }
 
-        public IRuleBuilderInitial<T, TProperty> Custom(Func<T, TProperty, <#= generics #>, ValidationResult> validatorFunction)
+		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, CustomContext, Task> validationAction)
         {
             return ruleBuilder
-                .Custom((x, context) =>
+                .CustomAsync((x, context, _) =>
                 {
 <# foreach (var j in Enumerable.Range(1, i)) { #>
-					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
-<# } #>
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    context.Append(validatorFunction(parent, x, <#= dependencies #>));
-                });
-        }
-
-		public IRuleBuilderOptions<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, Task<bool>> validatorFunction)
-        {
-            return ruleBuilder
-                .MustAsync((parent, child, cancellation, context) =>
-                {
-<# foreach (var j in Enumerable.Range(1, i)) { #>
-					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
-<# } #>
-                    return validatorFunction(parent, child, <#= dependencies #>);
-                });
-        }
-
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, CustomContext, Task> validationAction)
-        {
-            return ruleBuilder
-                .CustomAsync((x, context, cancellation) =>
-                {
-<# foreach (var j in Enumerable.Range(1, i)) { #>
-					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
+					var dependency<#= j #> = context.GetServiceProvider().GetRequiredService<<#= dependencyGenericName + j #>>();
 <# } #>
                     var parent = (T)context.ParentContext.InstanceToValidate;
                     return validationAction(parent, x, <#= dependencies #>, context);
                 });
         }
-
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, Task<ValidationResult>> validatorFunction)
-        {
-            return ruleBuilder
-                .CustomAsync(async (x, context, cancellation) =>
-                {
-<# foreach (var j in Enumerable.Range(1, i)) { #>
-					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
-<# } #>
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-					var result = await validatorFunction(parent, x, <#= dependencies #>);
-                    context.Append(result);
-                });
-        }
-
-		public IRuleBuilderOptions<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, CancellationToken, Task<bool>> validatorFunction)
-        {
-            return ruleBuilder
-                .MustAsync((parent, child, context, cancellation) =>
-                {
-<# foreach (var j in Enumerable.Range(1, i)) { #>
-					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
-<# } #>
-                    return validatorFunction(parent, child, <#= dependencies #>, cancellation);
-                });
-        }
-
+		
         public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, CustomContext, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
                 {
 <# foreach (var j in Enumerable.Range(1, i)) { #>
-					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
+					var dependency<#= j #> = context.GetServiceProvider().GetRequiredService<<#= dependencyGenericName + j #>>();
 <# } #>
                     var parent = (T)context.ParentContext.InstanceToValidate;
                     return validationAction(parent, x, <#= dependencies #>, context, cancellation);
                 });
         }
 
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, CancellationToken, Task<ValidationResult>> validatorFunction)
+        public IRuleBuilderOptions<T, TProperty> Must(Func<T, TProperty, <#= generics #>, bool> validatorFunction)
         {
             return ruleBuilder
-                .CustomAsync(async (x, context, cancellation) =>
+                .Must((parent, child, context) =>
                 {
 <# foreach (var j in Enumerable.Range(1, i)) { #>
-					var dependency<#= j #> = context.ResolveDependency<<#= dependencyGenericName + j #>>();
+					var dependency<#= j #> = context.GetServiceProvider().GetRequiredService<<#= dependencyGenericName + j #>>();
 <# } #>
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-					var result = await validatorFunction(parent, x, <#= dependencies #>, cancellation);
-                    context.Append(result);
+                    return validatorFunction(parent, child, <#= dependencies #>);
+                });
+        }
+
+		public IRuleBuilderOptions<T, TProperty> MustAsync(Func<T, TProperty, <#= generics #>, Task<bool>> validatorFunction)
+        {
+            return ruleBuilder
+                .MustAsync((parent, child, context, _) =>
+                {
+<# foreach (var j in Enumerable.Range(1, i)) { #>
+					var dependency<#= j #> = context.GetServiceProvider().GetRequiredService<<#= dependencyGenericName + j #>>();
+<# } #>
+                    return validatorFunction(parent, child, <#= dependencies #>);
+                });
+        }
+
+		public IRuleBuilderOptions<T, TProperty> MustAsync(Func<T, TProperty, <#= generics #>, CancellationToken, Task<bool>> validatorFunction)
+        {
+            return ruleBuilder
+                .MustAsync((parent, child, context, cancellation) =>
+                {
+<# foreach (var j in Enumerable.Range(1, i)) { #>
+					var dependency<#= j #> = context.GetServiceProvider().GetRequiredService<<#= dependencyGenericName + j #>>();
+<# } #>
+                    return validatorFunction(parent, child, <#= dependencies #>, cancellation);
                 });
         }
 

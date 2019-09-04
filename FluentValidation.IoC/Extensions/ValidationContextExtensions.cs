@@ -106,54 +106,54 @@ namespace FluentValidation.IoC
 
         #region Custom and PropertyValidator context
 
-        public static TValidator ResolveValidator<TProperty, TValidator>(this CustomContext context)
-            where TValidator : IValidator<TProperty>
-        {
-            return GetValidatorProvider(context).GetSpecificValidator<TValidator>();
-        }
+        //public static TValidator ResolveValidator<TProperty, TValidator>(this CustomContext context)
+        //    where TValidator : IValidator<TProperty>
+        //{
+        //    return GetValidatorProvider(context).GetSpecificValidator<TValidator>();
+        //}
 
-        public static TValidator ResolveValidator<TProperty, TValidator>(this PropertyValidatorContext context)
-            where TValidator : IValidator<TProperty>
-        {
-            return GetValidatorProvider(context).GetSpecificValidator<TValidator>();
-        }
+        //public static TValidator ResolveValidator<TProperty, TValidator>(this PropertyValidatorContext context)
+        //    where TValidator : IValidator<TProperty>
+        //{
+        //    return GetValidatorProvider(context).GetSpecificValidator<TValidator>();
+        //}
 
-        public static IValidator<TProperty> ResolveValidator<TProperty>(this PropertyValidatorContext context, Type validatorType)
-        {
-            return (IValidator<TProperty>)GetValidatorProvider(context).GetSpecificValidator(validatorType);
-        }
+        //public static IValidator<TProperty> ResolveValidator<TProperty>(this PropertyValidatorContext context, Type validatorType)
+        //{
+        //    return (IValidator<TProperty>)GetValidatorProvider(context).GetSpecificValidator(validatorType);
+        //}
 
-        public static IValidator<TProperty> ResolveValidator<TProperty>(this CustomContext context, Type validatorType)
-        {
-            return (IValidator<TProperty>)GetValidatorProvider(context).GetSpecificValidator(validatorType);
-        }
+        //public static IValidator<TProperty> ResolveValidator<TProperty>(this CustomContext context, Type validatorType)
+        //{
+        //    return (IValidator<TProperty>)GetValidatorProvider(context).GetSpecificValidator(validatorType);
+        //}
 
-        public static IValidator<TProperty> ResolveValidator<TProperty>(this CustomContext context)
-        {
-            return GetValidatorProvider(context).GetValidator<TProperty>();
-        }
+        //public static IValidator<TProperty> ResolveValidator<TProperty>(this CustomContext context)
+        //{
+        //    return GetValidatorProvider(context).GetValidator<TProperty>();
+        //}
 
-        public static IValidator<TProperty> ResolveValidator<TProperty>(this PropertyValidatorContext context)
-        {
-            return GetValidatorProvider(context).GetValidator<TProperty>();
-        }
+        //public static IValidator<TProperty> ResolveValidator<TProperty>(this PropertyValidatorContext context)
+        //{
+        //    return GetValidatorProvider(context).GetValidator<TProperty>();
+        //}
 
-        public static TDependency ResolveDependency<TDependency>(this CustomContext context)
-        {
-            return context.GetServiceProvider().GetRequiredService<TDependency>();
-        }
+        //public static TDependency ResolveDependency<TDependency>(this CustomContext context)
+        //{
+        //    return context.GetServiceProvider().GetRequiredService<TDependency>();
+        //}
 
-        public static TDependency ResolveDependency<TDependency>(this PropertyValidatorContext context)
-        {
-            return context.GetServiceProvider().GetRequiredService<TDependency>();
-        }
+        //public static TDependency ResolveDependency<TDependency>(this PropertyValidatorContext context)
+        //{
+        //    return context.GetServiceProvider().GetRequiredService<TDependency>();
+        //}
 
-        public static CustomContext Append(this CustomContext validationContext, ValidationResult result)
-        {
-            foreach (var failure in result.Errors)
-                validationContext.AddFailure(failure);
-            return validationContext;
-        }
+        //public static CustomContext Append(this CustomContext validationContext, ValidationResult result)
+        //{
+        //    foreach (var failure in result.Errors)
+        //        validationContext.AddFailure(failure);
+        //    return validationContext;
+        //}
 
         #endregion
     }

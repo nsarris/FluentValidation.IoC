@@ -19,8 +19,11 @@ namespace FluentValidation.IoC.Tests.Validators
                 .NotEmpty()
                 .Length(10, 20)
                 .ResolveName()
-                .Custom((parent, x, serviceProvider, context) =>
+                .Custom((x, context) =>
                 {
+                    var serviceProvider = context.GetServiceProvider();
+                    var parent = (Phone)context.ParentContext.InstanceToValidate;
+                    
                     var phoneBookService = serviceProvider.GetRequiredService<IPhoneBookService>();
                     if (!phoneBookService.IsExistingNumber(x))
                         context.AddFailure($"{x} is not an existing phone number");
