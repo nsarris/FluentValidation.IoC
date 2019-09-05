@@ -27,9 +27,8 @@ namespace FluentValidation.IoC
             configuration.Services.AddTransient(typeof(IValidationContextProvider<>), typeof(ValidationContextProvider<>));
             configuration.Services.AddTransient(typeof(IValidationContextProvider<,>), typeof(ValidationContextProvider<,>));
 
-            configuration.Services.Add(configuration.ValidatorProviderServiceDescriptor);
-            configuration.Services.Add(new ServiceDescriptor(typeof(IValidatorProvider), sp => sp.GetRequiredService(configuration.ValidatorProviderServiceDescriptor.ServiceType), configuration.ValidatorProviderServiceDescriptor.Lifetime));
-
+            configuration.Services.AddScoped<IValidatorFactory, ServiceProviderValidatorFactory>();
+            
             var interfaceMaps = configuration.ValidatorServiceDescriptors
                 .Select(x => new
                 {

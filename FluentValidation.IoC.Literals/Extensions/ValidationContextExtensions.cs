@@ -11,7 +11,7 @@ namespace FluentValidation.IoC
     {
         public static ILiteralService GetLiteralService(this IValidationContext context)
         {
-            return context.GetServiceProvider().GetRequiredService<ILiteralService>();
+            return context.GetServiceProvider().GetService<ILiteralService>();
         }
     }
 }

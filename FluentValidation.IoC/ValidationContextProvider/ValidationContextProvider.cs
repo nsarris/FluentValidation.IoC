@@ -8,9 +8,9 @@ namespace FluentValidation.IoC
 {
     internal sealed class ValidationContextProvider : IValidationContextProvider
     {
-        #region Properties
+        #region Fields
 
-        public IServiceProvider ServiceProvider { get; }
+        public readonly IServiceProvider serviceProvider;
 
         #endregion
 
@@ -18,7 +18,7 @@ namespace FluentValidation.IoC
 
         public ValidationContextProvider(IServiceProvider serviceProvider)
         {
-            this.ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
         #endregion
@@ -26,66 +26,56 @@ namespace FluentValidation.IoC
         #region Context builders
 
         public ValidationContext<T> BuildContext<T>(T instance)
-            => new ValidationContext<T>(instance).WithServiceProvider(ServiceProvider);
+            => BuildContext<T>(instance, null);
 
         public ValidationContext BuildContext(object instance)
-            => new ValidationContext(instance).WithServiceProvider(ServiceProvider);
+            => BuildContext(instance, null);
 
-        public ValidationContext<T> SetupContext<T>(ValidationContext<T> context)
-            => context.WithServiceProvider(ServiceProvider);
+        private ValidationContext<T> BuildContext<T>(T instance, Action<ValidationContext<T>> configure)
+        {
+            var context = new ValidationContext<T>(instance);
+            context.SetServiceProvider(serviceProvider);
+            configure?.Invoke(context);
+            return context;
+        }
 
-        public ValidationContext SetupContext(ValidationContext context)
-            => context.WithServiceProvider(ServiceProvider);
-
-        #endregion
-
-        #region Validator builders
-
-        public IValidator<T> GetValidator<T>()
-            => ServiceProvider.GetValidatorProvider().GetValidator<T>();
-
-        public TValidator GetSpecificValidator<TValidator>()
-            where TValidator : IValidator
-            => ServiceProvider.GetValidatorProvider().GetSpecificValidator<TValidator>();
+        private ValidationContext BuildContext(object instance, Action<ValidationContext> configure)
+        {
+            var context = new ValidationContext(instance);
+            context.SetServiceProvider(serviceProvider);
+            configure?.Invoke(context);
+            return context;
+        }
 
         #endregion
 
         #region Validations
 
-        public ValidationResult Validate<T>(T instance)
-            => BuildContext(instance).Validate();
+        public ValidationResult Validate<T>(T instance, Action<ValidationContext<T>> configureContext = null)
+            => BuildContext(instance, configureContext).Validate();
 
-        public ValidationResult Validate<T>(ValidationContext<T> context)
-            => SetupContext(context).Validate();
+        public ValidationResult ValidateUsing<TValidator>(object instance, Action<ValidationContext> configureContext = null) where TValidator : IValidator
+            => BuildContext(instance, configureContext).ValidateUsing<TValidator>();
 
-        public ValidationResult ValidateUsing<TValidator>(object instance)
-            where TValidator : IValidator
-            => BuildContext(instance).ValidateUsing<TValidator>();
+        public Task<ValidationResult> ValidateAsync<T>(T instance, CancellationToken cancellation, Action<ValidationContext<T>> configureContext = null)
+            => BuildContext(instance, configureContext).ValidateAsync(cancellation);
 
-        public ValidationResult ValidateUsing<TValidator>(ValidationContext context)
-            where TValidator : IValidator
-            => SetupContext(context).ValidateUsing<TValidator>();
+        public Task<ValidationResult> ValidateUsingAsync<TValidator>(object instance, CancellationToken cancellation, Action<ValidationContext> configureContext = null) where TValidator : IValidator
+            => BuildContext(instance, configureContext).ValidateUsingAsync<TValidator>(cancellation);
 
-        public Task<ValidationResult> ValidateAsync<T>(T instance, CancellationToken cancellation = default)
-            => BuildContext(instance).ValidateAsync(cancellation);
 
-        public Task<ValidationResult> ValidateAsync<T>(ValidationContext<T> context, CancellationToken cancellation = default)
-            => SetupContext(context).ValidateAsync(cancellation);
+        public Task<ValidationResult> ValidateAsync<T>(T instance, Action<ValidationContext<T>> configureContext = null)
+            => ValidateAsync(instance, default, configureContext);
 
-        public Task<ValidationResult> ValidateUsingAsync<TValidator>(object instance, CancellationToken cancellation = default)
-            where TValidator : IValidator
-            => BuildContext(instance).ValidateUsingAsync<TValidator>(cancellation);
-
-        public Task<ValidationResult> ValidateUsingAsync<TValidator>(ValidationContext context, CancellationToken cancellation = default)
-            where TValidator : IValidator
-            => SetupContext(context).ValidateUsingAsync<TValidator>(cancellation);
+        public Task<ValidationResult> ValidateUsingAsync<TValidator>(object instance, Action<ValidationContext> configureContext = null) where TValidator : IValidator
+            => ValidateUsingAsync<TValidator>(instance, default, configureContext);
 
         #endregion
 
         #region Define validated Type
 
         public IValidationContextProvider<T> For<T>()
-            => new ValidationContextProvider<T>(ServiceProvider);
+            => new ValidationContextProvider<T>(serviceProvider);
 
         #endregion
     }

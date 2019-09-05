@@ -2,6 +2,7 @@
 using FluentValidation.Internal;
 using FluentValidation.Results;
 using FluentValidation.Validators;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq.Expressions;
 using System.Threading;
@@ -114,7 +115,7 @@ namespace FluentValidation.IoC
             {
                 AssertValidatorType<TProperty>(validatorType);
 
-                return (IValidator<TProperty>)sp.GetValidatorProvider().GetSpecificValidator(validatorType);
+                return (IValidator<TProperty>)sp.GetRequiredService(validatorType);
             }, ruleSets);
         }
 

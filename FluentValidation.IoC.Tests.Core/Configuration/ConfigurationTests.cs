@@ -61,46 +61,11 @@ namespace FluentValidation.IoC.Tests.Core
             var services = new ServiceCollection()
                .AddFluentValidation();
 
-            var defaultConfiguration = new FluentValidationConfiguration(services);
-
             Assert.Contains(services,
-                x => x.ServiceType == typeof(DefaultValidatorProvider)
-                && x.ImplementationType == defaultConfiguration.ValidatorProviderServiceDescriptor.ImplementationType
-                && x.Lifetime == defaultConfiguration.ValidatorProviderServiceDescriptor.Lifetime
-                );
-
-            Assert.Contains(services,
-                x => x.ServiceType == typeof(IValidatorProvider)
-                && x.ImplementationType == null
-                && x.ImplementationFactory != null
-                && x.Lifetime == defaultConfiguration.ValidatorProviderServiceDescriptor.Lifetime
-                );
-        }
-
-        [Theory]
-        [InlineData(ServiceLifetime.Scoped)]
-        [InlineData(ServiceLifetime.Singleton)]
-        [InlineData(ServiceLifetime.Transient)]
-        public void Should_Add_Custom_ValidatorProvider(ServiceLifetime serviceLifetime)
-        {
-            var validatorProviderType = new Mock<IValidatorProvider>().Object.GetType();
-
-            var services = new ServiceCollection()
-               .AddFluentValidation(config => config
-                    .AddValidatorProvider(validatorProviderType, serviceLifetime));
-
-            Assert.Contains(services,
-                x => x.ServiceType == validatorProviderType
-                && x.ImplementationType == validatorProviderType
-                && x.Lifetime == serviceLifetime
-                );
-
-            Assert.Contains(services,
-                x => x.ServiceType == typeof(IValidatorProvider)
-                && x.ImplementationType == null
-                && x.ImplementationFactory != null
-                && x.Lifetime == serviceLifetime
-                );
+               x => x.ServiceType == typeof(IValidatorFactory)
+               && x.ImplementationType == typeof(ServiceProviderValidatorFactory)
+               && x.Lifetime == ServiceLifetime.Scoped
+               );
         }
 
         [Theory]

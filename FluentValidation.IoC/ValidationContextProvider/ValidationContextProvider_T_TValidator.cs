@@ -9,21 +9,29 @@ namespace FluentValidation.IoC
     {
         private readonly IServiceProvider serviceProvider;
 
-        internal ValidationContextProvider(IServiceProvider serviceProvider)
+        public ValidationContextProvider(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
         }
 
         public ValidationContext<T> BuildContext(T instance)
-            => new ValidationContext<T>(instance).WithServiceProvider(serviceProvider);
+            => BuildContext(instance, null);
 
-        public TValidator GetValidator()
-            => serviceProvider.GetValidatorProvider().GetSpecificValidator<TValidator>();
+        private ValidationContext<T> BuildContext(T instance, Action<ValidationContext<T>> configure)
+        {
+            var context = new ValidationContext<T>(instance);
+            context.SetServiceProvider(serviceProvider);
+            configure?.Invoke(context);
+            return context;
+        }
 
-        public ValidationResult Validate(T instance)
-            => BuildContext(instance).Validate();
+        public ValidationResult Validate(T instance, Action<ValidationContext<T>> configureContext)
+            => BuildContext(instance, configureContext).Validate();
 
-        public Task<ValidationResult> ValidateAsync(T instance, CancellationToken cancellation = default)
-            => BuildContext(instance).ValidateAsync(cancellation);
+        public Task<ValidationResult> ValidateAsync(T instance, CancellationToken cancellation, Action<ValidationContext<T>> configureContext)
+            => BuildContext(instance, configureContext).ValidateAsync(cancellation);
+
+        public Task<ValidationResult> ValidateAsync(T instance, Action<ValidationContext<T>> configureContext)
+            => ValidateAsync(instance, default, configureContext);
     }
 }

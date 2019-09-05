@@ -16,7 +16,8 @@ namespace FluentValidation.IoC.Unity
     {
         public static IUnityContainer RegisterFluentValidation(this IUnityContainer container, Action<FluentValidationConfiguration> configure)
         {
-            container.RegisterFactory<IServiceProvider>(scope => new UnityServiceProvider(scope), new ContainerControlledLifetimeManager());
+            if (!container.IsRegistered<IServiceProvider>())
+                container.RegisterFactory<IServiceProvider>(scope => new UnityServiceProvider(scope), new ContainerControlledLifetimeManager());
 
             container.ConfigureServices(services => services.AddFluentValidation(configure));
 
