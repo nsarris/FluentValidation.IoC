@@ -41,7 +41,10 @@ namespace FluentValidation.IoC.Tests.Core
             Assert.True(result.Errors.Count == 2);
 
             Assert.True(result.Errors[0].ErrorCode == "VatValidationServiceFailure"
-                && result.Errors[0].ErrorMessage == literalService.GetValidationErrorMessage(result.Errors[0].ErrorCode, result.Errors[0].FormattedMessagePlaceholderValues));
+                && result.Errors[0].ErrorMessage == literalService.GetValidationErrorMessage(
+                    result.Errors[0].ErrorCode, 
+                    result.Errors[0].FormattedMessagePlaceholderValues["PropertyName"].ToString(), 
+                    result.Errors[0].FormattedMessagePlaceholderValues["PropertyValue"]));
 
             //Assert.EndsWith("is not a valid mobile phone number", result.Errors[1].ErrorMessage);
 

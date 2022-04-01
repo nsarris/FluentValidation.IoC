@@ -39,30 +39,23 @@ namespace FluentValidation.IoC
         public static Task<ValidationResult> ValidateAsync<T>(this ValidationContext<T> context, CancellationToken cancellation = default)
             => context.GetValidator<IValidator<T>>().ValidateAsync(context, cancellation);
 
-        public static ValidationResult ValidateUsing(this ValidationContext context, Type validatorType)
-            => context.GetValidator(validatorType).Validate(context);
+        
 
         public static ValidationResult ValidateUsing<T>(this ValidationContext<T> context, Type validatorType)
             => context.GetValidator(validatorType).Validate(context);
 
-        public static Task<ValidationResult> ValidateUsingAsync(this ValidationContext context, Type validatorType, CancellationToken cancellation = default)
-            => context.GetValidator(validatorType).ValidateAsync(context, cancellation);
+        
 
         public static Task<ValidationResult> ValidateUsingAsync<T>(this ValidationContext<T> context, Type validatorType, CancellationToken cancellation = default)
             => context.GetValidator(validatorType).ValidateAsync(context, cancellation);
 
-        public static ValidationResult ValidateUsing<TValidator>(this ValidationContext context)
-            where TValidator : IValidator
-            => context.GetValidator<TValidator>().Validate(context);
+        
 
         public static ValidationResult ValidateUsing<T, TValidator>(this ValidationContext<T> context)
             where TValidator : IValidator<T>
             => context.GetValidator<TValidator>().Validate(context);
 
-        public static Task<ValidationResult> ValidateUsingAsync<TValidator>(this ValidationContext context, CancellationToken cancellation = default)
-            where TValidator : IValidator
-            => context.GetValidator<TValidator>().ValidateAsync(context, cancellation);
-
+        
         public static Task<ValidationResult> ValidateUsingAsync<T, TValidator>(this ValidationContext<T> context, CancellationToken cancellation = default)
             where TValidator : IValidator<T>
             => context.GetValidator<TValidator>().ValidateAsync(context, cancellation);

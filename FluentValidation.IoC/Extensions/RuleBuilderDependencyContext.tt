@@ -34,7 +34,7 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, <#= generics #>, CustomContext> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> Custom(Action<T, TProperty, <#= generics #>, ValidationContext<T>> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -42,12 +42,11 @@ namespace FluentValidation.IoC
 <# foreach (var j in Enumerable.Range(1, i)) { #>
 					var dependency<#= j #> = context.GetServiceProvider().GetRequiredService<<#= dependencyGenericName + j #>>();
 <# } #>
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    validationAction(parent, x, <#= dependencies #>, context);
+                    validationAction(context.InstanceToValidate, x, <#= dependencies #>, context);
                 });
         }
 
-		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, CustomContext, Task> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, ValidationContext<T>, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, _) =>
@@ -55,12 +54,11 @@ namespace FluentValidation.IoC
 <# foreach (var j in Enumerable.Range(1, i)) { #>
 					var dependency<#= j #> = context.GetServiceProvider().GetRequiredService<<#= dependencyGenericName + j #>>();
 <# } #>
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, <#= dependencies #>, context);
+                    return validationAction(context.InstanceToValidate, x, <#= dependencies #>, context);
                 });
         }
 		
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, <#= generics #>, ValidationContext<T>, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
@@ -68,8 +66,7 @@ namespace FluentValidation.IoC
 <# foreach (var j in Enumerable.Range(1, i)) { #>
 					var dependency<#= j #> = context.GetServiceProvider().GetRequiredService<<#= dependencyGenericName + j #>>();
 <# } #>
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, <#= dependencies #>, context, cancellation);
+                    return validationAction(context.InstanceToValidate, x, <#= dependencies #>, context, cancellation);
                 });
         }
 

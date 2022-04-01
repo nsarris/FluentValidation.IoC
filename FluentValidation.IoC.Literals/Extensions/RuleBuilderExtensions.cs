@@ -3,6 +3,7 @@ using FluentValidation.Internal;
 using FluentValidation.Results;
 using FluentValidation.Validators;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace FluentValidation.IoC
@@ -19,12 +20,14 @@ namespace FluentValidation.IoC
 
         public static IRuleBuilderOptions<T, TProperty> ResolveName<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder)
         {
-            var propertyName = ruleBuilder.GetRuleBuilder()?.Rule?.PropertyName;
-
-            if (string.IsNullOrEmpty(propertyName))
-                return ruleBuilder;
-
-            return ResolveName(ruleBuilder, typeof(T), propertyName);
+            return ruleBuilder
+                .Configure(x =>
+                {
+                    x.SetDisplayName(d =>
+                    {
+                        return d.GetLiteralService().GetPropertyName(typeof(T), x.PropertyName);
+                    });
+                });
         }
 
         public static IRuleBuilderOptions<T, TProperty> ResolveName<T, TProperty, TEntity>(this IRuleBuilderOptions<T, TProperty> ruleBuilder, Expression<Func<TEntity, object>> selector)
@@ -39,7 +42,10 @@ namespace FluentValidation.IoC
             return ruleBuilder
                 .Configure(x => 
                 {
-                    x.DisplayName = new InjectedPropertyNameStringSource(entityType, propertyName);
+                    x.SetDisplayName(d => 
+                    {
+                        return d.GetLiteralService().GetPropertyName(entityType, propertyName);
+                    });
                 });
         }
 
@@ -48,20 +54,25 @@ namespace FluentValidation.IoC
             return ruleBuilder
                 .Configure(x =>
                 {
-                    x.CurrentValidator.Options.ErrorCodeSource = new Resources.StaticStringSource(code);
-                    x.CurrentValidator.Options.ErrorMessageSource = new InjectedErrorMessageStringSource(code);
-                });
+                    x.Current.ErrorCode = code;
+                })
+                //    return ruleBuilder
+                //.Configure(x =>
+                //{
+                //    x.Current.ErrorCode = code;
+                //    x.Current.SetErrorMessage((c, p) => c.GetLiteralService().GetValidationErrorMessage(code, x.GetDisplayName(c), p));
+                //});
+                .ResolveMessage()
+                ;
         }
 
         public static IRuleBuilderOptions<T, TProperty> ResolveMessage<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder)
         {
-            var errorCodeSource = ruleBuilder.GetRuleBuilder()?.Rule?.CurrentValidator?.Options?.ErrorCodeSource;
-
-            if (!PropertyAccessor.TryGetValue<string>(errorCodeSource, "_message", out var code)
-                || string.IsNullOrEmpty(code))
-                throw new InvalidOperationException("Could not get code from validator. Please call WithErrorCode prior to ResolveMessage. Custom sources are not supported.");
-
-            return ruleBuilder.ResolveMessage(code);
+            return ruleBuilder
+                .Configure(x =>
+                {
+                    x.Current.SetErrorMessage((c, p) => c.GetLiteralService().GetValidationErrorMessage(x.Current.ErrorCode, x.GetDisplayName(c), p ));
+                });
         }
     }
 }

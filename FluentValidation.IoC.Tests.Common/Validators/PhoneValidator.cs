@@ -22,7 +22,7 @@ namespace FluentValidation.IoC.Tests.Validators
                 .Custom((x, context) =>
                 {
                     var serviceProvider = context.GetServiceProvider();
-                    var parent = (Phone)context.ParentContext.InstanceToValidate;
+                    var parent = context.InstanceToValidate;
                     
                     var phoneBookService = serviceProvider.GetRequiredService<IPhoneBookService>();
                     if (!phoneBookService.IsExistingNumber(x))

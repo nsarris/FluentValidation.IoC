@@ -9,6 +9,6 @@ namespace FluentValidation.IoC
     public interface ILiteralService
     {
         string GetPropertyName(Type entityType, string propertyName);
-        string GetValidationErrorMessage(string code, IReadOnlyDictionary<string,object> messageValues);
+        string GetValidationErrorMessage<T>(string code, string propertyName, T value);
     }
 }

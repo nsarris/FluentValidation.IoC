@@ -9,6 +9,10 @@ namespace FluentValidation.IoC.Tests.Services
 {
     public class MockLiteralService : ILiteralService
     {
+        public MockLiteralService()
+        {
+        }
+
         public string GetPropertyName(Type entityType, string propertyName)
         {
             if (entityType == typeof(Phone) && propertyName == nameof(Phone.Number))
@@ -22,20 +26,14 @@ namespace FluentValidation.IoC.Tests.Services
             return GetPropertyName(typeof(T), propertyName);
         }
 
-        public string GetValidationErrorMessage(string code, IReadOnlyDictionary<string, object> messageValues)
+        public string GetValidationErrorMessage<T>(string code, string propertyName, T value)
         {
             if (code == "VatValidationServiceFailure")
             {
-                var value = messageValues != null && messageValues.TryGetValue("PropertyValue", out var tmp) ? tmp : "{PropertyValue}";
-                return $"VAT Service failed to validate VAT number '{value}' for customer";
+                return $"VAT Service failed to validate '{propertyName}' '{value}' for customer";
             }
 
             return code;
-        }
-
-        public string GetValidationErrorMessage(string code)
-        {
-            return GetValidationErrorMessage(code, null);
         }
     }
 }

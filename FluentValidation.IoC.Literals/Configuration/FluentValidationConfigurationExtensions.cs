@@ -25,5 +25,13 @@ namespace FluentValidation.IoC
 
             return configuration;
         }
+
+        public static FluentValidationConfiguration AddLiteralService<TLiteralService>(this FluentValidationConfiguration configuration, Func<IServiceProvider, TLiteralService> factory, ServiceLifetime lifetime)
+            where TLiteralService : ILiteralService
+        {
+            configuration.Services.Add(new ServiceDescriptor(typeof(ILiteralService), sp => factory(sp), lifetime));
+
+            return configuration;
+        }
     }
 }

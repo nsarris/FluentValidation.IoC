@@ -19,36 +19,33 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, TDependency1, CustomContext> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> Custom(Action<T, TProperty, TDependency1, ValidationContext<T>> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
                 {
 					var dependency1 = context.GetServiceProvider().GetRequiredService<TDependency1>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    validationAction(parent, x, dependency1, context);
+                    validationAction(context.InstanceToValidate, x, dependency1, context);
                 });
         }
 
-		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, CustomContext, Task> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, ValidationContext<T>, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, _) =>
                 {
 					var dependency1 = context.GetServiceProvider().GetRequiredService<TDependency1>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, context);
+                    return validationAction(context.InstanceToValidate, x, dependency1, context);
                 });
         }
 		
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, ValidationContext<T>, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
                 {
 					var dependency1 = context.GetServiceProvider().GetRequiredService<TDependency1>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, context, cancellation);
+                    return validationAction(context.InstanceToValidate, x, dependency1, context, cancellation);
                 });
         }
 
@@ -97,39 +94,36 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, CustomContext> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, ValidationContext<T>> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
                 {
 					var dependency1 = context.GetServiceProvider().GetRequiredService<TDependency1>();
 					var dependency2 = context.GetServiceProvider().GetRequiredService<TDependency2>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    validationAction(parent, x, dependency1, dependency2, context);
+                    validationAction(context.InstanceToValidate, x, dependency1, dependency2, context);
                 });
         }
 
-		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, CustomContext, Task> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, ValidationContext<T>, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, _) =>
                 {
 					var dependency1 = context.GetServiceProvider().GetRequiredService<TDependency1>();
 					var dependency2 = context.GetServiceProvider().GetRequiredService<TDependency2>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, context);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, context);
                 });
         }
 		
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, ValidationContext<T>, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
                 {
 					var dependency1 = context.GetServiceProvider().GetRequiredService<TDependency1>();
 					var dependency2 = context.GetServiceProvider().GetRequiredService<TDependency2>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, context, cancellation);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, context, cancellation);
                 });
         }
 
@@ -181,7 +175,7 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, CustomContext> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, ValidationContext<T>> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -189,12 +183,11 @@ namespace FluentValidation.IoC
 					var dependency1 = context.GetServiceProvider().GetRequiredService<TDependency1>();
 					var dependency2 = context.GetServiceProvider().GetRequiredService<TDependency2>();
 					var dependency3 = context.GetServiceProvider().GetRequiredService<TDependency3>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    validationAction(parent, x, dependency1, dependency2, dependency3, context);
+                    validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, context);
                 });
         }
 
-		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, CustomContext, Task> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, ValidationContext<T>, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, _) =>
@@ -202,12 +195,11 @@ namespace FluentValidation.IoC
 					var dependency1 = context.GetServiceProvider().GetRequiredService<TDependency1>();
 					var dependency2 = context.GetServiceProvider().GetRequiredService<TDependency2>();
 					var dependency3 = context.GetServiceProvider().GetRequiredService<TDependency3>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, context);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, context);
                 });
         }
 		
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, ValidationContext<T>, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
@@ -215,8 +207,7 @@ namespace FluentValidation.IoC
 					var dependency1 = context.GetServiceProvider().GetRequiredService<TDependency1>();
 					var dependency2 = context.GetServiceProvider().GetRequiredService<TDependency2>();
 					var dependency3 = context.GetServiceProvider().GetRequiredService<TDependency3>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, context, cancellation);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, context, cancellation);
                 });
         }
 
@@ -271,7 +262,7 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, CustomContext> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, ValidationContext<T>> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -280,12 +271,11 @@ namespace FluentValidation.IoC
 					var dependency2 = context.GetServiceProvider().GetRequiredService<TDependency2>();
 					var dependency3 = context.GetServiceProvider().GetRequiredService<TDependency3>();
 					var dependency4 = context.GetServiceProvider().GetRequiredService<TDependency4>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, context);
+                    validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, context);
                 });
         }
 
-		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, CustomContext, Task> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, ValidationContext<T>, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, _) =>
@@ -294,12 +284,11 @@ namespace FluentValidation.IoC
 					var dependency2 = context.GetServiceProvider().GetRequiredService<TDependency2>();
 					var dependency3 = context.GetServiceProvider().GetRequiredService<TDependency3>();
 					var dependency4 = context.GetServiceProvider().GetRequiredService<TDependency4>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, context);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, context);
                 });
         }
 		
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, ValidationContext<T>, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
@@ -308,8 +297,7 @@ namespace FluentValidation.IoC
 					var dependency2 = context.GetServiceProvider().GetRequiredService<TDependency2>();
 					var dependency3 = context.GetServiceProvider().GetRequiredService<TDependency3>();
 					var dependency4 = context.GetServiceProvider().GetRequiredService<TDependency4>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, context, cancellation);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, context, cancellation);
                 });
         }
 
@@ -367,7 +355,7 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, CustomContext> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, ValidationContext<T>> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -377,12 +365,11 @@ namespace FluentValidation.IoC
 					var dependency3 = context.GetServiceProvider().GetRequiredService<TDependency3>();
 					var dependency4 = context.GetServiceProvider().GetRequiredService<TDependency4>();
 					var dependency5 = context.GetServiceProvider().GetRequiredService<TDependency5>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, context);
+                    validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, context);
                 });
         }
 
-		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, CustomContext, Task> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, ValidationContext<T>, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, _) =>
@@ -392,12 +379,11 @@ namespace FluentValidation.IoC
 					var dependency3 = context.GetServiceProvider().GetRequiredService<TDependency3>();
 					var dependency4 = context.GetServiceProvider().GetRequiredService<TDependency4>();
 					var dependency5 = context.GetServiceProvider().GetRequiredService<TDependency5>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, context);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, context);
                 });
         }
 		
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, ValidationContext<T>, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
@@ -407,8 +393,7 @@ namespace FluentValidation.IoC
 					var dependency3 = context.GetServiceProvider().GetRequiredService<TDependency3>();
 					var dependency4 = context.GetServiceProvider().GetRequiredService<TDependency4>();
 					var dependency5 = context.GetServiceProvider().GetRequiredService<TDependency5>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, context, cancellation);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, context, cancellation);
                 });
         }
 
@@ -469,7 +454,7 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, CustomContext> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, ValidationContext<T>> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -480,12 +465,11 @@ namespace FluentValidation.IoC
 					var dependency4 = context.GetServiceProvider().GetRequiredService<TDependency4>();
 					var dependency5 = context.GetServiceProvider().GetRequiredService<TDependency5>();
 					var dependency6 = context.GetServiceProvider().GetRequiredService<TDependency6>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, context);
+                    validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, context);
                 });
         }
 
-		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, CustomContext, Task> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, ValidationContext<T>, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, _) =>
@@ -496,12 +480,11 @@ namespace FluentValidation.IoC
 					var dependency4 = context.GetServiceProvider().GetRequiredService<TDependency4>();
 					var dependency5 = context.GetServiceProvider().GetRequiredService<TDependency5>();
 					var dependency6 = context.GetServiceProvider().GetRequiredService<TDependency6>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, context);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, context);
                 });
         }
 		
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, ValidationContext<T>, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
@@ -512,8 +495,7 @@ namespace FluentValidation.IoC
 					var dependency4 = context.GetServiceProvider().GetRequiredService<TDependency4>();
 					var dependency5 = context.GetServiceProvider().GetRequiredService<TDependency5>();
 					var dependency6 = context.GetServiceProvider().GetRequiredService<TDependency6>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, context, cancellation);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, context, cancellation);
                 });
         }
 
@@ -577,7 +559,7 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, CustomContext> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, ValidationContext<T>> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -589,12 +571,11 @@ namespace FluentValidation.IoC
 					var dependency5 = context.GetServiceProvider().GetRequiredService<TDependency5>();
 					var dependency6 = context.GetServiceProvider().GetRequiredService<TDependency6>();
 					var dependency7 = context.GetServiceProvider().GetRequiredService<TDependency7>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, context);
+                    validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, context);
                 });
         }
 
-		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, CustomContext, Task> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, ValidationContext<T>, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, _) =>
@@ -606,12 +587,11 @@ namespace FluentValidation.IoC
 					var dependency5 = context.GetServiceProvider().GetRequiredService<TDependency5>();
 					var dependency6 = context.GetServiceProvider().GetRequiredService<TDependency6>();
 					var dependency7 = context.GetServiceProvider().GetRequiredService<TDependency7>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, context);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, context);
                 });
         }
 		
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, ValidationContext<T>, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
@@ -623,8 +603,7 @@ namespace FluentValidation.IoC
 					var dependency5 = context.GetServiceProvider().GetRequiredService<TDependency5>();
 					var dependency6 = context.GetServiceProvider().GetRequiredService<TDependency6>();
 					var dependency7 = context.GetServiceProvider().GetRequiredService<TDependency7>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, context, cancellation);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, context, cancellation);
                 });
         }
 
@@ -691,7 +670,7 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, CustomContext> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, ValidationContext<T>> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -704,12 +683,11 @@ namespace FluentValidation.IoC
 					var dependency6 = context.GetServiceProvider().GetRequiredService<TDependency6>();
 					var dependency7 = context.GetServiceProvider().GetRequiredService<TDependency7>();
 					var dependency8 = context.GetServiceProvider().GetRequiredService<TDependency8>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, context);
+                    validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, context);
                 });
         }
 
-		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, CustomContext, Task> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, ValidationContext<T>, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, _) =>
@@ -722,12 +700,11 @@ namespace FluentValidation.IoC
 					var dependency6 = context.GetServiceProvider().GetRequiredService<TDependency6>();
 					var dependency7 = context.GetServiceProvider().GetRequiredService<TDependency7>();
 					var dependency8 = context.GetServiceProvider().GetRequiredService<TDependency8>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, context);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, context);
                 });
         }
 		
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, ValidationContext<T>, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
@@ -740,8 +717,7 @@ namespace FluentValidation.IoC
 					var dependency6 = context.GetServiceProvider().GetRequiredService<TDependency6>();
 					var dependency7 = context.GetServiceProvider().GetRequiredService<TDependency7>();
 					var dependency8 = context.GetServiceProvider().GetRequiredService<TDependency8>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, context, cancellation);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, context, cancellation);
                 });
         }
 
@@ -811,7 +787,7 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, CustomContext> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, ValidationContext<T>> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -825,12 +801,11 @@ namespace FluentValidation.IoC
 					var dependency7 = context.GetServiceProvider().GetRequiredService<TDependency7>();
 					var dependency8 = context.GetServiceProvider().GetRequiredService<TDependency8>();
 					var dependency9 = context.GetServiceProvider().GetRequiredService<TDependency9>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, context);
+                    validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, context);
                 });
         }
 
-		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, CustomContext, Task> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, ValidationContext<T>, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, _) =>
@@ -844,12 +819,11 @@ namespace FluentValidation.IoC
 					var dependency7 = context.GetServiceProvider().GetRequiredService<TDependency7>();
 					var dependency8 = context.GetServiceProvider().GetRequiredService<TDependency8>();
 					var dependency9 = context.GetServiceProvider().GetRequiredService<TDependency9>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, context);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, context);
                 });
         }
 		
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, ValidationContext<T>, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
@@ -863,8 +837,7 @@ namespace FluentValidation.IoC
 					var dependency7 = context.GetServiceProvider().GetRequiredService<TDependency7>();
 					var dependency8 = context.GetServiceProvider().GetRequiredService<TDependency8>();
 					var dependency9 = context.GetServiceProvider().GetRequiredService<TDependency9>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, context, cancellation);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, context, cancellation);
                 });
         }
 
@@ -937,7 +910,7 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, CustomContext> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, ValidationContext<T>> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -952,12 +925,11 @@ namespace FluentValidation.IoC
 					var dependency8 = context.GetServiceProvider().GetRequiredService<TDependency8>();
 					var dependency9 = context.GetServiceProvider().GetRequiredService<TDependency9>();
 					var dependency10 = context.GetServiceProvider().GetRequiredService<TDependency10>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, context);
+                    validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, context);
                 });
         }
 
-		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, CustomContext, Task> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, ValidationContext<T>, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, _) =>
@@ -972,12 +944,11 @@ namespace FluentValidation.IoC
 					var dependency8 = context.GetServiceProvider().GetRequiredService<TDependency8>();
 					var dependency9 = context.GetServiceProvider().GetRequiredService<TDependency9>();
 					var dependency10 = context.GetServiceProvider().GetRequiredService<TDependency10>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, context);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, context);
                 });
         }
 		
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, ValidationContext<T>, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
@@ -992,8 +963,7 @@ namespace FluentValidation.IoC
 					var dependency8 = context.GetServiceProvider().GetRequiredService<TDependency8>();
 					var dependency9 = context.GetServiceProvider().GetRequiredService<TDependency9>();
 					var dependency10 = context.GetServiceProvider().GetRequiredService<TDependency10>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, context, cancellation);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, context, cancellation);
                 });
         }
 
@@ -1069,7 +1039,7 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, CustomContext> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, ValidationContext<T>> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -1085,12 +1055,11 @@ namespace FluentValidation.IoC
 					var dependency9 = context.GetServiceProvider().GetRequiredService<TDependency9>();
 					var dependency10 = context.GetServiceProvider().GetRequiredService<TDependency10>();
 					var dependency11 = context.GetServiceProvider().GetRequiredService<TDependency11>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11, context);
+                    validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11, context);
                 });
         }
 
-		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, CustomContext, Task> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, ValidationContext<T>, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, _) =>
@@ -1106,12 +1075,11 @@ namespace FluentValidation.IoC
 					var dependency9 = context.GetServiceProvider().GetRequiredService<TDependency9>();
 					var dependency10 = context.GetServiceProvider().GetRequiredService<TDependency10>();
 					var dependency11 = context.GetServiceProvider().GetRequiredService<TDependency11>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11, context);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11, context);
                 });
         }
 		
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, ValidationContext<T>, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
@@ -1127,8 +1095,7 @@ namespace FluentValidation.IoC
 					var dependency9 = context.GetServiceProvider().GetRequiredService<TDependency9>();
 					var dependency10 = context.GetServiceProvider().GetRequiredService<TDependency10>();
 					var dependency11 = context.GetServiceProvider().GetRequiredService<TDependency11>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11, context, cancellation);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11, context, cancellation);
                 });
         }
 
@@ -1207,7 +1174,7 @@ namespace FluentValidation.IoC
             this.ruleBuilder = ruleBuilder;
         }
 
-		public IRuleBuilderInitial<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12, CustomContext> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> Custom(Action<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12, ValidationContext<T>> validationAction)
         {
             return ruleBuilder
                 .Custom((x, context) =>
@@ -1224,12 +1191,11 @@ namespace FluentValidation.IoC
 					var dependency10 = context.GetServiceProvider().GetRequiredService<TDependency10>();
 					var dependency11 = context.GetServiceProvider().GetRequiredService<TDependency11>();
 					var dependency12 = context.GetServiceProvider().GetRequiredService<TDependency12>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11, dependency12, context);
+                    validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11, dependency12, context);
                 });
         }
 
-		public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12, CustomContext, Task> validationAction)
+		public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12, ValidationContext<T>, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, _) =>
@@ -1246,12 +1212,11 @@ namespace FluentValidation.IoC
 					var dependency10 = context.GetServiceProvider().GetRequiredService<TDependency10>();
 					var dependency11 = context.GetServiceProvider().GetRequiredService<TDependency11>();
 					var dependency12 = context.GetServiceProvider().GetRequiredService<TDependency12>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11, dependency12, context);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11, dependency12, context);
                 });
         }
 		
-        public IRuleBuilderInitial<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12, CustomContext, CancellationToken, Task> validationAction)
+        public IRuleBuilderOptionsConditions<T, TProperty> CustomAsync(Func<T, TProperty, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TDependency11, TDependency12, ValidationContext<T>, CancellationToken, Task> validationAction)
         {
             return ruleBuilder
                 .CustomAsync((x, context, cancellation) =>
@@ -1268,8 +1233,7 @@ namespace FluentValidation.IoC
 					var dependency10 = context.GetServiceProvider().GetRequiredService<TDependency10>();
 					var dependency11 = context.GetServiceProvider().GetRequiredService<TDependency11>();
 					var dependency12 = context.GetServiceProvider().GetRequiredService<TDependency12>();
-                    var parent = (T)context.ParentContext.InstanceToValidate;
-                    return validationAction(parent, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11, dependency12, context, cancellation);
+                    return validationAction(context.InstanceToValidate, x, dependency1, dependency2, dependency3, dependency4, dependency5, dependency6, dependency7, dependency8, dependency9, dependency10, dependency11, dependency12, context, cancellation);
                 });
         }
 
