@@ -27,8 +27,10 @@ namespace FluentValidation.IoC
             configuration.Services.AddTransient(typeof(IValidationContextProvider<>), typeof(ValidationContextProvider<>));
             configuration.Services.AddTransient(typeof(IValidationContextProvider<,>), typeof(ValidationContextProvider<,>));
 
+#pragma warning disable CS0618 // Type or member is obsolete
             configuration.Services.AddScoped<IValidatorFactory, ServiceProviderValidatorFactory>();
-            
+#pragma warning restore CS0618 // Type or member is obsolete
+
             var interfaceMaps = configuration.ValidatorServiceDescriptors
                 .Select(x => new
                 {

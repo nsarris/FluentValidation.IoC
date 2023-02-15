@@ -1,10 +1,7 @@
 ﻿using FluentValidation.Results;
-using FluentValidation.Validators;
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-using FluentValidation.Internal;
 using System.Threading.Tasks;
 using System.Threading;
 

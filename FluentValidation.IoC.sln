@@ -1,13 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29215.179
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentValidation.IoC", "FluentValidation.IoC\FluentValidation.IoC.csproj", "{3AAA71BF-FA12-4127-8885-949227330891}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentValidation.IoC.Unity", "FluentValidation.IoC.Unity\FluentValidation.IoC.Unity.csproj", "{8A2F89ED-41AE-477C-B425-569EEE06BDF1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentValidation.IoC.Tests.Unity", "FluentValidation.IoC.Tests.Unity\FluentValidation.IoC.Tests.Unity.csproj", "{0D918566-4B9A-4889-BF74-6A6DADA7F76B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentValidation.IoC.Tests.Common", "FluentValidation.IoC.Tests.Common\FluentValidation.IoC.Tests.Common.csproj", "{51485A0A-CBBF-4135-8560-A2714EBFD932}"
 EndProject
@@ -25,14 +21,6 @@ Global
 		{3AAA71BF-FA12-4127-8885-949227330891}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AAA71BF-FA12-4127-8885-949227330891}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AAA71BF-FA12-4127-8885-949227330891}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A2F89ED-41AE-477C-B425-569EEE06BDF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A2F89ED-41AE-477C-B425-569EEE06BDF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A2F89ED-41AE-477C-B425-569EEE06BDF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A2F89ED-41AE-477C-B425-569EEE06BDF1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D918566-4B9A-4889-BF74-6A6DADA7F76B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D918566-4B9A-4889-BF74-6A6DADA7F76B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D918566-4B9A-4889-BF74-6A6DADA7F76B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D918566-4B9A-4889-BF74-6A6DADA7F76B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{51485A0A-CBBF-4135-8560-A2714EBFD932}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{51485A0A-CBBF-4135-8560-A2714EBFD932}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51485A0A-CBBF-4135-8560-A2714EBFD932}.Release|Any CPU.ActiveCfg = Release|Any CPU

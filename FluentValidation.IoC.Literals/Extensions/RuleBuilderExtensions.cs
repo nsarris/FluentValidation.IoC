@@ -40,9 +40,9 @@ namespace FluentValidation.IoC
         public static IRuleBuilderOptions<T, TProperty> ResolveName<T, TProperty>(this IRuleBuilderOptions<T, TProperty> ruleBuilder, Type entityType, string propertyName)
         {
             return ruleBuilder
-                .Configure(x => 
+                .Configure(x =>
                 {
-                    x.SetDisplayName(d => 
+                    x.SetDisplayName(d =>
                     {
                         return d.GetLiteralService().GetPropertyName(entityType, propertyName);
                     });
@@ -56,12 +56,6 @@ namespace FluentValidation.IoC
                 {
                     x.Current.ErrorCode = code;
                 })
-                //    return ruleBuilder
-                //.Configure(x =>
-                //{
-                //    x.Current.ErrorCode = code;
-                //    x.Current.SetErrorMessage((c, p) => c.GetLiteralService().GetValidationErrorMessage(code, x.GetDisplayName(c), p));
-                //});
                 .ResolveMessage()
                 ;
         }
@@ -71,7 +65,7 @@ namespace FluentValidation.IoC
             return ruleBuilder
                 .Configure(x =>
                 {
-                    x.Current.SetErrorMessage((c, p) => c.GetLiteralService().GetValidationErrorMessage(x.Current.ErrorCode, x.GetDisplayName(c), p ));
+                    x.Current.SetErrorMessage((c, p) => c.GetLiteralService().GetValidationErrorMessage(x.Current.ErrorCode, x.GetDisplayName(c), p));
                 });
         }
     }

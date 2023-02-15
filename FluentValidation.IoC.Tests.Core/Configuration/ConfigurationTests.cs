@@ -56,6 +56,7 @@ namespace FluentValidation.IoC.Tests.Core
         }
 
         [Fact]
+        [Obsolete]
         public void Should_Add_Default_ValidatorProvider()
         {
             var services = new ServiceCollection()
